@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="10"
+    tools:context=".OfferDeals">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <FrameLayout
+            android:id="@+id/Fl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:src="@drawable/food_cover"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="We offer two "
+                android:textSize="25sp"
+                android:layout_gravity="center"
+                android:textColor="#000000"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="delicious optins "
+                android:layout_marginTop="35dp"
+                android:textSize="25sp"
+                android:layout_gravity="center"
+                android:textColor="#000000"/>
+        </FrameLayout>
+
+        <TableLayout
+            android:id="@+id/Tl"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/border"
+            android:layout_below="@+id/Fl"
+            android:weightSum="8"
+            android:stretchColumns="0,1">
+
+            <TableRow>
+
+                <LinearLayout
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="1">
+                    <!--android:background="#422774">-->
+
+                    <TextView
+                        android:id="@+id/full_day_meals"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="FULL DAY MEALS "
+                        android:maxLines="1"
+                        android:padding="10dp"
+                        android:paddingLeft="20dp"
+                        android:textColor="#000000"
+                        />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="#000000" />
+
+                    <TextView
+                        android:id="@+id/lunch_only"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text=" LUNCH ONLY"
+                        android:padding="10dp"
+                        android:paddingLeft="20dp"
+                        android:textColor="#000000"
+                        />
+
+                </LinearLayout>
+            </TableRow>
+
+            <View
+                android:layout_height="1dip"
+                android:background="#FF909090" />
+
+            <TableRow>
+
+                <LinearLayout
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    >
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/blue_bullet"
+                        />
+
+                    <TextView
+                        android:id="@+id/text1"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:text="Breakfast-Lunch main course"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:textColor="#000000" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="#FF909090" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/blue_bullet" />
+
+                    <TextView
+                        android:id="@+id/text2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:text="Breakfast-Lunch main course"
+                        android:textColor="#000000" />
+
+
+                </LinearLayout>
+
+            </TableRow>
+
+            <View
+                android:layout_height="1dip"
+                android:background="#FF909090" />
+
+            <TableRow>
+
+                <LinearLayout
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    >
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/blue_bullet"
+                        android:layout_gravity="center_vertical"/>
+
+                    <TextView
+                        android:id="@+id/text3"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:text="Lunch Salad"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingLeft="10dp"
+                        android:textColor="#000000" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="#FF909090" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/blue_bullet"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:id="@+id/text4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:text="Lunch Salad"
+                        android:textColor="#000000" />
+
+
+                </LinearLayout>
+
+            </TableRow>
+
+            <View
+                android:layout_height="1dip"
+                android:background="#FF909090" />
+
+            <TableRow>
+
+                <LinearLayout
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    >
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/blue_bullet"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:id="@+id/text5"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:text="Lunch Soup"
+                        android:paddingLeft="10dp"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:textColor="#000000" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="#FF909090" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/blue_bullet"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:id="@+id/text6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:text="Lunch Soup"
+                        android:textColor="#000000" />
+
+
+                </LinearLayout>
+
+            </TableRow>
+
+            <View
+                android:layout_height="1dip"
+                android:background="#FF909090" />
+
+            <TableRow>
+
+                <LinearLayout
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    >
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/blue_bullet"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:id="@+id/text7"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:text="Dinner main Course"
+                        android:paddingLeft="10dp"
+                        android:textColor="#000000" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="#FF909090" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/blue_bullet"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:id="@+id/text8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:text="Dessert"
+                        android:layout_gravity="center"
+                        android:textColor="#000000" />
+
+
+                </LinearLayout>
+
+            </TableRow>
+
+
+            <View
+                android:layout_height="1dip"
+                android:background="#FF909090" />
+
+            <TableRow>
+
+                <LinearLayout
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    >
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/blue_bullet"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:id="@+id/text9"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:text="Dinner Salad"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingLeft="10dp"
+                        android:textColor="#000000" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="#FF909090" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/blue_bullet"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:id="@+id/text10"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:text="Beverage"
+                        android:textColor="#000000" />
+
+
+                </LinearLayout>
+
+            </TableRow>
+
+            <View
+                android:layout_height="1dip"
+                android:background="#FF909090" />
+
+            <TableRow>
+
+                <LinearLayout
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    >
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/blue_bullet"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:id="@+id/text11"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:text="Dessert"
+                        android:paddingLeft="10dp"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:textColor="#000000" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="#FF909090" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/blue_bullet"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="20dp"
+                        android:textColor="#000000" />
+
+
+                </LinearLayout>
+
+            </TableRow>
+
+            <View
+                android:layout_height="1dip"
+                android:background="#FF909090" />
+
+            <TableRow>
+
+                <LinearLayout
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    >
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/blue_bullet"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:id="@+id/text12"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:text="Beverage"
+                        android:paddingLeft="10dp"
+                        android:textColor="#000000" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="#FF909090" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/blue_bullet"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:background="#00ffffff"
+                        android:paddingLeft="20dp"
+                        android:textColor="#000000" />
+
+
+                </LinearLayout>
+
+            </TableRow>
+
+        </TableLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/Tl">
+            <Button
+                android:id="@+id/btn_full_day_meal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:layout_weight="0.05"
+                android:textColor="#FFFFFF"
+                android:padding="10dp"
+                android:layout_marginRight="2dp"
+                android:background="@drawable/theme_corner_button"
+                android:text="CHOOSE FULLDAY MEAL "/>
+
+            <Button
+                android:id="@+id/btn_lunch_only"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:layout_weight="0.05"
+                android:textColor="#FFFFFF"
+                android:layout_marginLeft="2dp"
+                android:padding="10dp"
+                android:background="@drawable/theme_corner_button"
+                android:text="CHOOSE LUNCH ONLY"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+
+
+</LinearLayout>
