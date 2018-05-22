@@ -29,6 +29,7 @@ import app.regime.com.ui.fragment.MenuFragment;
 import app.regime.com.ui.fragment.OfferDayFragment;
 import app.regime.com.ui.fragment.OfferDealsFragment;
 import app.regime.com.ui.fragment.RegisterFragment;
+import app.regime.com.ui.fragment.SignInFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener, Callback {
@@ -183,6 +184,8 @@ public class MainActivity extends AppCompatActivity
             fragment = new FullDayMealsFragment(this);
         } else if (name.equals("FullMealDetailFragment")) {
             fragment = new FullMealDetailFragment(this);
+        }else if (name.equals("SigninFragment")) {
+            fragment = new SignInFragment(this);
         }
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.main_fragment_container, fragment);

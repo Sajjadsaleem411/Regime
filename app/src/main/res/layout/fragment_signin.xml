@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:weightSum="10"
+    tools:context=".SignIn">
+    <LinearLayout
+        android:id="@+id/L1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/theme_corner_button"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:text="Sign In"
+                android:gravity="center_vertical"
+                android:textSize="25sp"
+                android:textColor="#ffffff"/>
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/lock_white"/>
+        </RelativeLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:orientation="vertical">
+
+        <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="5dp"-->
+        <!--android:text="SignIn with your Email and ZIP"-->
+        <!--android:textSize="15sp"-->
+        <!--android:textColor="#000000"-->
+        <!--android:gravity="center"/>-->
+        <EditText
+            android:id="@+id/Email_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:singleLine="true"
+            android:textSize="30sp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/border"
+            android:gravity="center"
+            android:padding="1dp"
+            android:textColor="#000000"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
+        <!--<TextView-->
+
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textSize="20sp"-->
+        <!--android:text="Code"-->
+        <!--android:gravity="center"/>-->
+        <EditText
+            android:id="@+id/Pass_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:singleLine="true"
+            android:inputType="textPassword"
+            android:hint="Password"
+            android:gravity="center"
+            android:background="@drawable/border"
+            android:textColor="#000000"/>
+    </LinearLayout>
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_weight="2"-->
+    <!--android:gravity="center"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<TextView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Have an Invite Code?"-->
+    <!--android:gravity="center"-->
+    <!--android:textColor="#422774"-->
+    <!--android:textSize="25sp"/>-->
+    <!--<TextView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:gravity="center"-->
+    <!--android:textColor="#000000"-->
+    <!--android:text="By tapping Continue To Menue you agree to our"/>-->
+    <!--<TextView-->
+    <!--android:id="@+id/Text2"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Terms &#38; Conditions"-->
+    <!--android:gravity="center"-->
+    <!--android:textColor="#000000"/>-->
+    <!--<View-->
+    <!--android:layout_width="130dp"-->
+    <!--android:layout_height="1dp"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:background="#000000"/>-->
+
+
+    <!--</LinearLayout>-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_weight="3"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
+        <ImageView
+            android:layout_width="350dp"
+            android:layout_height="350dp"
+            android:src="@drawable/food_icon"/>
+        <Button
+            android:id="@+id/Continue_to_menue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="CONTINUE TO MENUE"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/theme_corner_button"
+            android:textSize="18sp"/>
+    </LinearLayout>
+
+
+</LinearLayout>
