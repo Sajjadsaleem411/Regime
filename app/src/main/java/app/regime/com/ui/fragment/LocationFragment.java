@@ -1,7 +1,6 @@
 package app.regime.com.ui.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,7 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import app.regime.com.R;
-import app.regime.com.ui.Callback;
+import app.regime.com.ui.FragmentContact;
 
 /**
  * Created by Muhammad Sajjad on 5/19/2018.
@@ -20,11 +19,11 @@ import app.regime.com.ui.Callback;
 
 @SuppressLint("ValidFragment")
 public class LocationFragment extends Fragment {
-    Callback callBack;
+    FragmentContact callBack;
     TextView AddressView;
     EditText AddressText;
     Button Confirm,AddAnotherLocation;
-    public LocationFragment(Callback back){
+    public LocationFragment(FragmentContact back){
         callBack=back;
     }
 

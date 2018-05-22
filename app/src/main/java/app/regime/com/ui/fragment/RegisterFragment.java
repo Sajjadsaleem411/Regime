@@ -1,7 +1,6 @@
 package app.regime.com.ui.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -18,7 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import app.regime.com.R;
-import app.regime.com.ui.Callback;
+import app.regime.com.ui.FragmentContact;
 
 /**
  * Created by Muhammad Sajjad on 5/19/2018.
@@ -26,7 +25,7 @@ import app.regime.com.ui.Callback;
 
 @SuppressLint("ValidFragment")
 public class RegisterFragment extends Fragment {
-    Callback callBack;
+    FragmentContact callBack;
     EditText FirstName,MiddleName,LastName,Mobile,Email,Password,ConfirmPassword;
     TextView TermsConditions;
     RadioButton Male,Female,Makkah,Madinah,Jeddah;
@@ -39,7 +38,7 @@ public class RegisterFragment extends Fragment {
     String mEmail="";
     String mPassword="";
     String mConfirmPassword="";
-    public RegisterFragment(Callback back){
+    public RegisterFragment(FragmentContact back){
         callBack=back;
     }
 

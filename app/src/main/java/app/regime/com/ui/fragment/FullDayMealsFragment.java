@@ -10,17 +10,17 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import app.regime.com.R;
-import app.regime.com.ui.Callback;
+import app.regime.com.ui.FragmentContact;
 
 @SuppressLint("ValidFragment")
 public class FullDayMealsFragment extends Fragment {
     LinearLayout BreakFast,MainCourses,Salads,Soups,Desserts;
     View BreakFastView,MainCoursesView,SaladsView,SoupsView,DessertsView;
     Button btn_select_meal;
-    Callback callback;
+    FragmentContact fragmentContact;
 
-    public FullDayMealsFragment(Callback callback) {
-        this.callback = callback;
+    public FullDayMealsFragment(FragmentContact fragmentContact) {
+        this.fragmentContact = fragmentContact;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,7 +49,7 @@ public class FullDayMealsFragment extends Fragment {
         btn_select_meal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callback.ChangeFragment("FullMealDetailFragment",null);
+                fragmentContact.ChangeFragment("FullMealDetailFragment",null);
             }
         });
 

@@ -1,7 +1,6 @@
 package app.regime.com.ui.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,7 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import app.regime.com.R;
-import app.regime.com.ui.Callback;
+import app.regime.com.ui.FragmentContact;
 
 /**
  * Created by Muhammad Sajjad on 5/19/2018.
@@ -19,12 +18,12 @@ import app.regime.com.ui.Callback;
 
 @SuppressLint("ValidFragment")
 public class OfferDealsFragment extends Fragment {
-    Callback callback;
+    FragmentContact fragmentContact;
     TextView FullDayMeals,LunchOnly;
     Button ChooseFullDayMeal,ChooseLunchOnly;
 
-    public OfferDealsFragment(Callback callback){
-        this.callback=callback;
+    public OfferDealsFragment(FragmentContact fragmentContact){
+        this.fragmentContact = fragmentContact;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,7 +65,7 @@ public class OfferDealsFragment extends Fragment {
         ChooseLunchOnly.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                callback.ChangeFragment("OfferDayFragment",null);
+                fragmentContact.ChangeFragment("OfferDayFragment",null);
            //     startActivity(new Intent(OfferDeals.this,FullDayMealSecond.class));
             }
         });

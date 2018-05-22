@@ -8,14 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import app.regime.com.R;
-import app.regime.com.ui.Callback;
+import app.regime.com.ui.FragmentContact;
 
 @SuppressLint("ValidFragment")
 public class FullMealDetailFragment extends Fragment {
-    Callback callback;
+    FragmentContact fragmentContact;
 
-    public FullMealDetailFragment(Callback callback) {
-        this.callback = callback;
+    public FullMealDetailFragment(FragmentContact fragmentContact) {
+        this.fragmentContact = fragmentContact;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

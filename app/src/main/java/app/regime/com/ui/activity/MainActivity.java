@@ -3,8 +3,6 @@ package app.regime.com.ui.activity;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
@@ -15,11 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import app.regime.com.R;
 import app.regime.com.helper.BottomNavigationViewHelper;
-import app.regime.com.ui.Callback;
+import app.regime.com.ui.FragmentContact;
 import app.regime.com.ui.fragment.AnalysisFragment;
 import app.regime.com.ui.fragment.FullDayMealsFragment;
 import app.regime.com.ui.fragment.FullMealDetailFragment;
@@ -32,7 +29,7 @@ import app.regime.com.ui.fragment.RegisterFragment;
 import app.regime.com.ui.fragment.SignInFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener, Callback {
+        implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener, FragmentContact {
     Fragment fragment;
 
     String currentfragment = "";
@@ -186,6 +183,9 @@ public class MainActivity extends AppCompatActivity
             fragment = new FullMealDetailFragment(this);
         }else if (name.equals("SigninFragment")) {
             fragment = new SignInFragment(this);
+        }
+        else if (name.equals("HomeFragment")) {
+            fragment = new HomeFragment();
         }
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.main_fragment_container, fragment);

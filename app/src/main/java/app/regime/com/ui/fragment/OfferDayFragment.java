@@ -2,7 +2,6 @@ package app.regime.com.ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -18,7 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import app.regime.com.R;
-import app.regime.com.ui.Callback;
+import app.regime.com.ui.FragmentContact;
 
 /**
  * Created by Muhammad Sajjad on 5/19/2018.
@@ -30,10 +29,10 @@ public class OfferDayFragment extends Fragment {
     Button Confirm;
     LinearLayout ChooseDate;
     RelativeLayout DaySelect;
-    Callback callback;
+    FragmentContact fragmentContact;
 
-    public OfferDayFragment(Callback callback) {
-        this.callback = callback;
+    public OfferDayFragment(FragmentContact fragmentContact) {
+        this.fragmentContact = fragmentContact;
     }
 
     @Override
@@ -71,7 +70,7 @@ public class OfferDayFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // startActivity(new Intent(OfferDay.this,FullDayMeal.class));
-                callback.ChangeFragment("FullDayMealsFragment",null);
+                fragmentContact.ChangeFragment("FullDayMealsFragment",null);
             }
         });
 
