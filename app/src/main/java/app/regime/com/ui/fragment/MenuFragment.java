@@ -1,20 +1,39 @@
 package app.regime.com.ui.fragment;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import app.regime.com.R;
+import app.regime.com.api.ApiInterface;
+import app.regime.com.api.RetroProvider;
 import app.regime.com.ui.adapter.GridViewAdapter;
+import app.regime.com.utills.CommonUtils;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Administrator on 4/17/2018.
  */
 
 public class MenuFragment extends Fragment {
+    List<String> images;
+
+
     public static String[] osNameList = {
             "BREAKFAST", "BREAKFAST",
             "BREAKFAST", "BREAKFAST",

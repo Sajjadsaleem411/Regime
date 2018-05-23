@@ -1,9 +1,11 @@
 package app.regime.com.ui.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +14,26 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import app.regime.com.R;
+import app.regime.com.api.ApiInterface;
+import app.regime.com.api.RetroProvider;
 import app.regime.com.ui.FragmentContact;
+import app.regime.com.utills.CommonUtils;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static app.regime.com.utills.CommonUtils.validateEmail;
+import static app.regime.com.utills.CommonUtils.validateForNull;
 
 /**
  * Created by Muhammad Sajjad on 5/19/2018.
@@ -73,9 +89,8 @@ public class RegisterFragment extends Fragment {
         AddLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                callBack.ChangeFragment("LocationFragment",null);
+//                callBack.ChangeFragment("LocationFragment",null);
 
-/*
                 mEmail = Email.getText().toString();
                 mPassword = Password.getText().toString();
                 mFirstName = FirstName.getText().toString();
@@ -87,84 +102,82 @@ public class RegisterFragment extends Fragment {
                 boolean checkemail = validateEmail(Email , "Please Enter Email" , "Invalid Email");
                 boolean check = validateForNull(Password , "Please Enter Password");
                 boolean checkfirstname = validateForNull(FirstName , "Please Enter First Name");
-                boolean checkmiddlename = validateForNull(MiddleName , "Please Enter Middle Name");
-                boolean checklastname = validateForNull(LastName , "Please Enter Last Name");
-                boolean checkmobile = validateForNull(Mobile , "Please Enter Mobile No");
+              //  boolean checkmiddlename = validateForNull(MiddleName , "Please Enter Middle Name");
+              //  boolean checklastname = validateForNull(LastName , "Please Enter Last Name");
+             //   boolean checkmobile = validateForNull(Mobile , "Please Enter Mobile No");
                 boolean checkconfirmpassword = validateForNull(ConfirmPassword , "Please Enter Confirm Password");
 
 
-                if(checkemail ==true && check==true)
+                if(checkemail ==true && check==true&&checkfirstname&&checkconfirmpassword)
                 {
-                    callBack.ChangeFragment("LocationFragment",null);
+                  Register();
                 }
-*/
 
             }
         });
         return view;
     }
-    private boolean validateEmail(EditText p_editText, String p_nullMsg, String p_invalidMsg)
-    {
-        boolean m_isValid = false;
-        try
-        {
-            if (p_editText != null)
-            {
-                if(validateForNull(p_editText,p_nullMsg))
-                {
-                    Pattern m_pattern = Pattern.compile("([\\w\\-]([\\.\\w])+[\\w]+@([\\w\\-]+\\.)+[A-Za-z]{2,4})");
-                    Matcher m_matcher = m_pattern.matcher(p_editText.getText().toString().trim());
-                    if (!m_matcher.matches()&& p_editText.getText().toString().trim().length() > 0)
-                    {
-                        m_isValid = false;
-                        p_editText.setError(p_invalidMsg);
+
+
+    public void Register() {
+
+     /*   Intent intent1 = new Intent(SignInActivity.this, MissOutActivity.class);
+        startActivity(intent1);*/
+        final ProgressDialog progressDialog = CommonUtils.showLoadingDialog(getActivity());
+        progressDialog.show();
+        ApiInterface apiService =
+                RetroProvider.getClient();
+        Call<String> call = apiService.register(mFirstName,mEmail,mPassword);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                try {
+
+                    progressDialog.dismiss();
+                    JSONObject jsonObject = new JSONObject(response.body());
+
+                    int status = jsonObject.getInt("status");
+                    String code = jsonObject.getString("message");
+                    JSONArray jsonArray=jsonObject.getJSONArray("user");
+
+                    JSONObject userJson=jsonArray.getJSONObject(0);
+
+
+                    if (status==200) {
+                        callBack.ChangeFragment("LocationFragment",null);
+                //        fragmentContact.ChangeFragment("HomeFragment",null);
+/*
+                        //    editor.putString("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJVc2VySUQiOjIxLCJ1c2VyTmFtZSI6Ik1hbGlrIiwiaWF0IjoxNTIyMzk0MDIxfQ.dcjqht3pzVb3MWlzuWJnOh7rrk8tn7Rg1lhO1vd60xY");
+                        editor.putString("token", userJson.getString("token"));
+                        editor.putBoolean("login", true);
+                        if(!isCheck&&!sharedPreferences.getString("email","").equals(email)){
+                            editor.putBoolean("remember", false);
+
+                        }
+                        editor.putString("email", email);
+                        editor.putString("password", pass);
+
+                        editor.apply();
+
+                        Intent intent1 = new Intent(SignInActivity.this, MainActivity.class);
+                        startActivity(intent1);
+                        finish();
+*/
+
+                    } else {
+                        Toast.makeText(getActivity(), "" + code, Toast.LENGTH_SHORT).show();
                     }
-                    else
-                    {
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-                        m_isValid = true;
+            }
 
-                    }
-                }
-                else
-                {
-                    m_isValid = false;
-                }
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e("error", call.toString());
+                progressDialog.dismiss();
             }
-            else
-            {
-                m_isValid = false;
-            }
-        }
-        catch(Throwable p_e)
-        {
-            p_e.printStackTrace(); // Error handling if application crashes
-        }
-        return m_isValid;
-    }
-
-    private boolean validateForNull(EditText p_editText, String p_nullMsg)
-    {
-        boolean m_isValid = false;
-        try
-        {
-            if (p_editText != null && p_nullMsg != null)
-            {
-                if (TextUtils.isEmpty(p_editText.getText().toString().trim()))
-                {
-                    p_editText.setError(p_nullMsg);
-                    m_isValid = false;
-                }
-                else
-                {
-                    m_isValid = true;
-                }
-            }
-        }
-        catch(Throwable p_e)
-        {
-            p_e.printStackTrace(); // Error handling if application crashes
-        }
-        return m_isValid;
+        });
     }
 }

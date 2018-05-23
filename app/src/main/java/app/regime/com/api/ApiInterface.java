@@ -1,16 +1,25 @@
 package app.regime.com.api;
 
+import app.regime.com.model.Menu;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface ApiInterface {
 
     @FormUrlEncoded
+    @POST("api/users/register")
+    Call<String> register(@Field("firstname") String name, @Field("email") String email,
+                          @Field("password") String password);
+
+/*
+    @FormUrlEncoded
     @POST("api/client/register")
-    Call<String> register(@Field("name") String name, @Field("email") String email,
+    Call<String> register(@Field("firstname") String name, @Field("email") String email,
                           @Field("password") String password, @Field("username") String userName, @Field("mobile") String mobile);
+*/
 
     @FormUrlEncoded
     @POST("api/client/verifyCode")
@@ -48,8 +57,8 @@ public interface ApiInterface {
 
 
     @FormUrlEncoded
-    @POST("api/clientServices/menuService")
-    Call<String> menuService(@Field("category_id") Integer category_id);
+    @GET("api/profile/sampleMenu")
+    Call<Menu> menuService();
 
     @FormUrlEncoded
     @POST("api/clientServices/booking")
