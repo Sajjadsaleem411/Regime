@@ -42,7 +42,7 @@ public class RetroProvider {
                         Request original = chain.request();
 
                         Request request = original.newBuilder()
-                                .header("x-access-key", "OFEC-8BC8-12OP-434U")
+                                .header("x-access-key", "UUAU-13T6-10R9-L6R5")
                                 .method(original.method(), original.body())
                                 .build();
 
@@ -52,7 +52,7 @@ public class RetroProvider {
                 .build();
         if (retroInstance == null) {
             retroInstance = new Retrofit.Builder()
-                    .baseUrl("https://habga.herokuapp.com/")
+                    .baseUrl(BASE_URL)
                     .client(okHttpClient)
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create()

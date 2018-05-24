@@ -1,6 +1,7 @@
 package app.regime.com.ui.fragment;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -11,6 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,27 +46,28 @@ public class HomeFragment extends Fragment {
     private List<Integer> data;
     ViewPager viewPager;
     List<String> images;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view=inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        horizontal_recycler_view= (RecyclerView)view.findViewById(R.id.week_menu_recyleview);
-
+        horizontal_recycler_view = (RecyclerView) view.findViewById(R.id.week_menu_recyleview);
+        images = new ArrayList<>();
         data = fill_with_data();
-        viewPager = (ViewPager)view.findViewById(R.id.viewPager);
+        viewPager = (ViewPager) view.findViewById(R.id.viewPager);
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getActivity());
 
         viewPager.setAdapter(viewPagerAdapter);
 
-        horizontalAdapter=new HorizontalAdapter(data, getActivity());
+        horizontalAdapter = new HorizontalAdapter(images, getActivity());
 
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         horizontal_recycler_view.setLayoutManager(horizontalLayoutManager);
         horizontal_recycler_view.setAdapter(horizontalAdapter);
-        FetchMenu();
+        //      FetchMenu();
         return view;
     }
 
@@ -69,12 +75,13 @@ public class HomeFragment extends Fragment {
 
         List<Integer> data = new ArrayList<>();
 
-        data.add( R.drawable.breakfast_wednesday);
-        data.add( R.drawable.breakfast_sunday);
-        data.add( R.drawable.breakfast_wednesday);
-        data.add( R.drawable.breakfast_sunday);
-        data.add( R.drawable.breakfast_wednesday);
-        data.add( R.drawable.breakfast_sunday);
+        data.add(R.drawable.breakfast_wednesday);
+        data.add(R.drawable.breakfast_sunday);
+        data.add(R.drawable.breakfast_wednesday);
+        data.add(R.drawable.breakfast_sunday);
+        data.add(R.drawable.breakfast_wednesday);
+        data.add(R.drawable.breakfast_sunday);
+        FetchMenu();
         return data;
     }
 
@@ -84,43 +91,53 @@ public class HomeFragment extends Fragment {
         startActivity(intent1);*/
         final ProgressDialog progressDialog = CommonUtils.showLoadingDialog(getActivity());
         progressDialog.show();
-        ApiInterface apiService =
-                RetroProvider.getClient();
-        Call<Menu> call = apiService.menuService();
-        call.enqueue(new Callback<Menu>() {
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user", 0);
+        RequestParams params = new RequestParams();
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.addHeader("x-access-key", "UUAU-13T6-10R9-L6R5");
+//        client.addHeader("x-access-token", sharedPreferences.getString("token", ""));
+        client.addHeader("x-access-token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo1MjEsIm5hbWUiOiJhYmJhcyIsImlhdCI6MTUxODU5ODkwNH0.Tc36x6e_DNgVSb9PnLyQuXYLjEpBWVgmuju0IXgcUoI");
+
+        client.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        client.get("https://regim.herokuapp.com/api/profile/sampleMenu", params, new JsonHttpResponseHandler() {
             @Override
-            public void onResponse(Call<Menu> call, Response<Menu> response) {
+            public void onStart() {
+                Log.e("response UpdateProfile", "start");
+            }
 
-                progressDialog.dismiss();
-                  /*  JSONObject jsonObject = new JSONObject(response.body());
-
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    progressDialog.dismiss();
+                    JSONObject jsonObject = response;
                     int status = jsonObject.getInt("status");
-                    String code = jsonObject.getString("message");
-                    JSONArray jsonArray=jsonObject.getJSONArray("data");
+                    if (status == 200) {
+                        JSONArray message = jsonObject.getJSONArray("data");
+                        for (int i = 0; i < message.length(); i++) {
+                            JSONObject data = message.getJSONObject(i);
+                            images.add(data.getString("ItemImage"));
 
-
-                    images=new ArrayList<>();*/
-/*Menu menu=response.getre;
-                    if (response.==200) {
-                        for (int i=0;i<jsonArray.length();i++){
-                            JSONObject userJson=jsonArray.getJSONObject(i);
-                            images.add(userJson.getString("ItemImage"));
                         }
-                        Log.d("SSS",""+images);
-
-                    } else {
-                        Toast.makeText(getActivity(), "" + images, Toast.LENGTH_SHORT).show();
-                    }*/
-
+                        Log.d("images", "" + images);
+                           horizontalAdapter.notifyDataSetChanged();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
-            public void onFailure(Call<Menu> call, Throwable t) {
-                Log.e("error", call.toString());
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
                 progressDialog.dismiss();
-
+                Toast.makeText(getActivity(), "Please try again", Toast.LENGTH_SHORT).show();
             }
 
+            @Override
+            public void onRetry(int retryNo) {
+            }
         });
     }
 }

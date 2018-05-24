@@ -1,0 +1,45 @@
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginTop="10dp"
+    android:orientation="horizontal"
+    app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+    tools:layout_editor_absoluteX="16dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/img_check1"
+        android:layout_width="25dp"
+        android:layout_height="30dp"
+        android:background="@drawable/image_border"
+        android:src="@mipmap/red" />
+    <ImageView
+        android:id="@+id/img_check2"
+        android:layout_width="25dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/image_border"
+        />
+
+    <TextView
+        android:id="@+id/tv_name_item"
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="5dp"
+        android:text="Chiken Sandwich with Onions and Sumac in Saj Bread"
+        android:textColor="#000000"/>
+    <TextView
+        android:id="@+id/tv_rank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="B"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/image_border"
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp"/>
+</LinearLayout>

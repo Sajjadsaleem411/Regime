@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity
             fragment = new AnalysisFragment();
 
         } else if (id == R.id.action_more) {
-            fragment = new AnalysisFragment();
+            fragment = new LocationFragment(this);
         }
 
         fragmentTransaction.replace(R.id.main_fragment_container, fragment);

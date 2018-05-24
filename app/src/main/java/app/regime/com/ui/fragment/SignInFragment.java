@@ -3,6 +3,7 @@ package app.regime.com.ui.fragment;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -42,6 +43,10 @@ public class SignInFragment extends Fragment {
     Button Continue;
     String mEmail="";
     String mPass="";
+
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
     public SignInFragment(FragmentContact fragmentContact) {
         this.fragmentContact = fragmentContact;
     }
@@ -51,6 +56,8 @@ public class SignInFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_signin, container, false);
 
+        sharedPreferences = getActivity().getSharedPreferences("user", 0);
+        editor = sharedPreferences.edit();
         final EditText Email = (EditText)view.findViewById(R.id.Email_text);
         final EditText Password = (EditText)view.findViewById(R.id.Pass_text);
         // Code = (TextView)findViewById(R.id.Text1);
@@ -108,13 +115,22 @@ public class SignInFragment extends Fragment {
                     JSONObject jsonObject = new JSONObject(response.body());
 
                     int status = jsonObject.getInt("status");
-                    String code = jsonObject.getString("message");
-                    JSONArray jsonArray=jsonObject.getJSONArray("user");
+                    JSONArray jsonArray=jsonObject.getJSONArray("data");
 
                     JSONObject userJson=jsonArray.getJSONObject(0);
 
 
                     if (status==200) {
+                        editor.putString("token", userJson.getString("token"));
+                        editor.putBoolean("login", true);
+                       /* if(!isCheck&&!sharedPreferences.getString("email","").equals(email)){
+                            editor.putBoolean("remember", false);
+
+                        }*/
+                        editor.putString("email", email);
+                        editor.putString("password", pass);
+
+                        editor.apply();
                         fragmentContact.ChangeFragment("HomeFragment",null);
 /*
                         //    editor.putString("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJVc2VySUQiOjIxLCJ1c2VyTmFtZSI6Ik1hbGlrIiwiaWF0IjoxNTIyMzk0MDIxfQ.dcjqht3pzVb3MWlzuWJnOh7rrk8tn7Rg1lhO1vd60xY");
@@ -135,7 +151,7 @@ public class SignInFragment extends Fragment {
 */
 
                     } else {
-                        Toast.makeText(getActivity(), "" + code, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "" + status, Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

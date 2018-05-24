@@ -42,22 +42,22 @@ import static app.regime.com.utills.CommonUtils.validateForNull;
 @SuppressLint("ValidFragment")
 public class RegisterFragment extends Fragment {
     FragmentContact callBack;
-    EditText FirstName,MiddleName,LastName,Mobile,Email,Password,ConfirmPassword;
+    EditText FirstName, MiddleName, LastName, Mobile, Email, Password, ConfirmPassword;
     TextView TermsConditions;
-    RadioButton Male,Female,Makkah,Madinah,Jeddah;
+    RadioButton Male, Female, Makkah, Madinah, Jeddah;
     CheckBox CheckTermsConditions;
     Button AddLocation;
-    String mFirstName="";
-    String mLastName="";
-    String mMiddleName="";
-    String mMobile="";
-    String mEmail="";
-    String mPassword="";
-    String mConfirmPassword="";
-    public RegisterFragment(FragmentContact back){
-        callBack=back;
-    }
+    String mFirstName = "";
+    String mLastName = "";
+    String mMiddleName = "";
+    String mMobile = "";
+    String mEmail = "";
+    String mPassword = "";
+    String mConfirmPassword = "";
 
+    public RegisterFragment(FragmentContact back) {
+        callBack = back;
+    }
 
 
     @Override
@@ -66,21 +66,21 @@ public class RegisterFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_register, container, false);
 
-        final EditText FirstName = (EditText)view.findViewById(R.id.first_name_text);
-        final EditText MiddleName =(EditText)view.findViewById(R.id.middle_name_text);
-        final EditText LastName = (EditText)view.findViewById(R.id.last_name_text);
-        final EditText Email =(EditText)view.findViewById(R.id.email_text);
-        final EditText Password = (EditText)view.findViewById(R.id.pass_text);
-        final EditText ConfirmPassword =(EditText)view.findViewById(R.id.confirm_pass_text);
-        final EditText Mobile = (EditText)view.findViewById(R.id.mobile_text);
-        TermsConditions = (TextView)view.findViewById(R.id.terms_conditions);
+        final EditText FirstName = (EditText) view.findViewById(R.id.first_name_text);
+        final EditText MiddleName = (EditText) view.findViewById(R.id.middle_name_text);
+        final EditText LastName = (EditText) view.findViewById(R.id.last_name_text);
+        final EditText Email = (EditText) view.findViewById(R.id.email_text);
+        final EditText Password = (EditText) view.findViewById(R.id.pass_text);
+        final EditText ConfirmPassword = (EditText) view.findViewById(R.id.confirm_pass_text);
+        final EditText Mobile = (EditText) view.findViewById(R.id.mobile_text);
+        TermsConditions = (TextView) view.findViewById(R.id.terms_conditions);
         CheckTermsConditions = (CheckBox) view.findViewById(R.id.check_terms);
-        Male = (RadioButton)view.findViewById(R.id.radio_male);
-        Female = (RadioButton)view.findViewById(R.id.radio_female);
-        Jeddah = (RadioButton)view.findViewById(R.id.radio_jeddah);
-        Makkah = (RadioButton)view.findViewById(R.id.radio_makkah);
-        Madinah = (RadioButton)view.findViewById(R.id.radio_madinah);
-        AddLocation = (Button)view.findViewById(R.id.Locationbtn);
+        Male = (RadioButton) view.findViewById(R.id.radio_male);
+        Female = (RadioButton) view.findViewById(R.id.radio_female);
+        Jeddah = (RadioButton) view.findViewById(R.id.radio_jeddah);
+        Makkah = (RadioButton) view.findViewById(R.id.radio_makkah);
+        Madinah = (RadioButton) view.findViewById(R.id.radio_madinah);
+        AddLocation = (Button) view.findViewById(R.id.Locationbtn);
 
 
         final String abc = Email.getEditableText().toString().trim();
@@ -99,18 +99,26 @@ public class RegisterFragment extends Fragment {
                 mMobile = Mobile.getText().toString();
                 mConfirmPassword = ConfirmPassword.getText().toString();
 
-                boolean checkemail = validateEmail(Email , "Please Enter Email" , "Invalid Email");
-                boolean check = validateForNull(Password , "Please Enter Password");
-                boolean checkfirstname = validateForNull(FirstName , "Please Enter First Name");
-              //  boolean checkmiddlename = validateForNull(MiddleName , "Please Enter Middle Name");
-              //  boolean checklastname = validateForNull(LastName , "Please Enter Last Name");
-             //   boolean checkmobile = validateForNull(Mobile , "Please Enter Mobile No");
-                boolean checkconfirmpassword = validateForNull(ConfirmPassword , "Please Enter Confirm Password");
+                boolean checkemail = validateEmail(Email, "Please Enter Email", "Invalid Email");
+                boolean check = validateForNull(Password, "Please Enter Password");
+                boolean checkfirstname = validateForNull(FirstName, "Please Enter First Name");
+                //  boolean checkmiddlename = validateForNull(MiddleName , "Please Enter Middle Name");
+                //  boolean checklastname = validateForNull(LastName , "Please Enter Last Name");
+                //   boolean checkmobile = validateForNull(Mobile , "Please Enter Mobile No");
+                boolean checkconfirmpassword = validateForNull(ConfirmPassword, "Please Enter Confirm Password");
 
 
-                if(checkemail ==true && check==true&&checkfirstname&&checkconfirmpassword)
-                {
-                  Register();
+                if (checkemail == true && check == true && checkfirstname && checkconfirmpassword) {
+                    if (mPassword.equals(mConfirmPassword)) {
+                        if (CheckTermsConditions.isChecked())
+                            Register();
+                        else
+
+                            Toast.makeText(getActivity(), "" + "Please check term and condition", Toast.LENGTH_SHORT).show();
+                    } else {
+
+                        Toast.makeText(getActivity(), "" + "Password not match", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
             }
@@ -123,11 +131,13 @@ public class RegisterFragment extends Fragment {
 
      /*   Intent intent1 = new Intent(SignInActivity.this, MissOutActivity.class);
         startActivity(intent1);*/
+
+
         final ProgressDialog progressDialog = CommonUtils.showLoadingDialog(getActivity());
         progressDialog.show();
         ApiInterface apiService =
                 RetroProvider.getClient();
-        Call<String> call = apiService.register(mFirstName,mEmail,mPassword);
+        Call<String> call = apiService.register(mFirstName, mEmail, mPassword);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -137,15 +147,11 @@ public class RegisterFragment extends Fragment {
                     JSONObject jsonObject = new JSONObject(response.body());
 
                     int status = jsonObject.getInt("status");
-                    String code = jsonObject.getString("message");
-                    JSONArray jsonArray=jsonObject.getJSONArray("user");
+                    String msg = jsonObject.getString("message");
 
-                    JSONObject userJson=jsonArray.getJSONObject(0);
-
-
-                    if (status==200) {
-                        callBack.ChangeFragment("LocationFragment",null);
-                //        fragmentContact.ChangeFragment("HomeFragment",null);
+                    if (status == 200) {
+                        callBack.ChangeFragment("LocationFragment", null);
+                        //        fragmentContact.ChangeFragment("HomeFragment",null);
 /*
                         //    editor.putString("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJVc2VySUQiOjIxLCJ1c2VyTmFtZSI6Ik1hbGlrIiwiaWF0IjoxNTIyMzk0MDIxfQ.dcjqht3pzVb3MWlzuWJnOh7rrk8tn7Rg1lhO1vd60xY");
                         editor.putString("token", userJson.getString("token"));
@@ -165,7 +171,7 @@ public class RegisterFragment extends Fragment {
 */
 
                     } else {
-                        Toast.makeText(getActivity(), "" + code, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "" + msg, Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

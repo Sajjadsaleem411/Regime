@@ -2,6 +2,7 @@ package app.regime.com.api;
 
 import app.regime.com.model.Menu;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -56,9 +57,8 @@ public interface ApiInterface {
     Call<String> fetchService(@Field("service_id") Integer service_id);
 
 
-    @FormUrlEncoded
     @GET("api/profile/sampleMenu")
-    Call<Menu> menuService();
+    void menuService(Callback<Menu> loginResponseCallback);
 
     @FormUrlEncoded
     @POST("api/clientServices/booking")

@@ -8,10 +8,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.Collections;
 import java.util.List;
 
 import app.regime.com.R;
+import app.regime.com.api.RetroProvider;
 
 /**
  * Created by Muhammad Sajjad on 4/17/2018.
@@ -20,11 +23,11 @@ import app.regime.com.R;
 public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.MyViewHolder> {
 
 
-    List<Integer> horizontalList = Collections.emptyList();
+    List<String> horizontalList = Collections.emptyList();
     Context context;
 
 
-    public HorizontalAdapter(List<Integer> horizontalList, Context context) {
+    public HorizontalAdapter(List<String> horizontalList, Context context) {
         this.horizontalList = horizontalList;
         this.context = context;
     }
@@ -50,8 +53,8 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-
-        holder.imageView.setImageResource(horizontalList.get(position));
+        Picasso.with(context).load(RetroProvider.BASE_URL+""+horizontalList.get(position)).into(holder.imageView);
+     //   Glide.with(context).load(RetroProvider.BASE_URL+""+horizontalList.get(position)).into(holder.imageView);
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override

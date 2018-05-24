@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbars="none"
     android:orientation="vertical">
 
 
     <LinearLayout
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="vertical">
+
         <HorizontalScrollView
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="none"
-            android:background="#FFFFFF">
+            android:background="#FFFFFF"
+            android:scrollbars="none">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -30,11 +33,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:orientation="vertical">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="BREAKFAST"
-                        android:textColor="#000000"/>
+                        android:textColor="#000000" />
+
                     <View
                         android:id="@+id/braekfast_view"
                         android:layout_width="match_parent"
@@ -42,17 +47,20 @@
                         android:layout_marginTop="10dp"
                         android:background="#FFC000" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/main_courses"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:orientation="vertical">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="MAIN COURSES"
-                        android:textColor="#000000"/>
+                        android:textColor="#000000" />
+
                     <View
                         android:id="@+id/main_courses_view"
                         android:layout_width="match_parent"
@@ -60,17 +68,20 @@
                         android:layout_marginTop="10dp"
                         android:background="#FFC000" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/salads"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:orientation="vertical">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="SALADS"
-                        android:textColor="#000000"/>
+                        android:textColor="#000000" />
+
                     <View
                         android:id="@+id/salads_view"
                         android:layout_width="match_parent"
@@ -78,17 +89,20 @@
                         android:layout_marginTop="10dp"
                         android:background="#FFC000" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/soups"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:orientation="vertical">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="SOUPS"
-                        android:textColor="#000000"/>
+                        android:textColor="#000000" />
+
                     <View
                         android:id="@+id/soups_view"
                         android:layout_width="match_parent"
@@ -96,6 +110,7 @@
                         android:layout_marginTop="10dp"
                         android:background="#FFC000" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/dessert"
                     android:layout_width="wrap_content"
@@ -103,11 +118,13 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:orientation="vertical">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="DESSERTS"
-                        android:textColor="#000000"/>
+                        android:textColor="#000000" />
+
                     <View
                         android:id="@+id/dessert_view"
                         android:layout_width="match_parent"
@@ -125,16 +142,16 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
+
             <RelativeLayout
                 android:id="@+id/relativeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="0dp"
+                android:layout_weight="3"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteX="0dp"
-                android:layout_weight="3">
+                tools:layout_editor_absoluteX="0dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -149,11 +166,39 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:text="FRIDAY"
-                    android:textSize="25sp"
-                    android:textColor="#000000" />
+                    android:textColor="#000000"
+                    android:textSize="25sp" />
             </RelativeLayout>
 
-            <LinearLayout
+
+        </LinearLayout>
+
+        <ExpandableListView
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/lvExp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:childDivider="#00000000"
+            android:groupIndicator="@null"
+            android:stackFromBottom="true" />
+    </LinearLayout>
+
+    <Button
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="5dp"
+        android:id="@+id/btn_select_meal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0.1"
+        android:background="@drawable/theme_corner_button"
+        android:text="Select Your Meal"
+        android:textColor="#FFFFFF" />
+
+
+</LinearLayout><!-- <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -185,15 +230,15 @@
                     android:layout_width="25dp"
                     android:layout_height="30dp"
                     android:background="@drawable/image_border"
-                    android:src="@mipmap/red" />
+                    android:src="@mipmap/red"
+                    android:id="@+id/imageView2" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
                     android:layout_alignParentTop="true"
-                    android:layout_marginLeft="35dp"
+                    android:layout_toEndOf="@+id/imageView2"
+                    android:layout_toRightOf="@+id/imageView2"
                     android:text="Rice with Milk"
                     android:textColor="#000000" />
                 <TextView
@@ -503,19 +548,4 @@
                     android:paddingRight="20dp"
                     android:paddingLeft="20dp"/>
             </RelativeLayout>
-
-            <Button
-                android:id="@+id/btn_select_meal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Select Your Meal"
-                android:textColor="#FFFFFF"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/theme_corner_button"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-
-</ScrollView>
+-->
