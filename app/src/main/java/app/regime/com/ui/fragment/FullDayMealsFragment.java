@@ -23,23 +23,28 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import app.regime.com.R;
 import app.regime.com.model.Category;
 import app.regime.com.model.Deal;
+import app.regime.com.model.Item;
 import app.regime.com.ui.FragmentContact;
 import app.regime.com.ui.adapter.ExpandableListAdapter;
 import app.regime.com.utills.CommonUtils;
 
 @SuppressLint("ValidFragment")
-public class FullDayMealsFragment extends Fragment {
+public class FullDayMealsFragment extends Fragment implements ExpandableListAdapter.UpdateList {
     LinearLayout BreakFast, MainCourses, Salads, Soups, Desserts;
     View BreakFastView, MainCoursesView, SaladsView, SoupsView, DessertsView;
     Button btn_select_meal;
     FragmentContact fragmentContact;
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
-    Deal deal = new Deal();
+    ArrayList<Category> selectCategory = new ArrayList<>();
+    boolean[] selectmeal;
+    //   Deal deal = new Deal();
+    List<Category> categories = new ArrayList<>();
 
     public FullDayMealsFragment(FragmentContact fragmentContact) {
         this.fragmentContact = fragmentContact;
@@ -70,12 +75,22 @@ public class FullDayMealsFragment extends Fragment {
         SoupsView.setVisibility(View.GONE);
         DessertsView.setVisibility(View.GONE);
 
+        listAdapter = new ExpandableListAdapter(getContext(), categories, "Meals", FullDayMealsFragment.this);
+
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
         GetMeals();
 
         btn_select_meal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentContact.ChangeFragment("FullMealDetailFragment", null);
+                if (AllCheck()) {
+                    Bundle bundle = getArguments();
+                    bundle.putSerializable("Cat_List", selectCategory);
+                    fragmentContact.ChangeFragment("FullMealDetailFragment", bundle);
+                } else {
+                    Toast.makeText(getActivity(), "Please select all category", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -169,37 +184,41 @@ public class FullDayMealsFragment extends Fragment {
                     JSONObject jsonObject = response;
                     int status = jsonObject.getInt("status");
                     if (status == 200) {
-                        deal.categories = new ArrayList<>();
                         JSONArray message = jsonObject.getJSONArray("categories");
+
+                        selectmeal = new boolean[message.length()];
                         for (int i = 0; i < message.length(); i++) {
+                            selectmeal[i] = false;
                             JSONObject data = message.getJSONObject(i);
                             Category category = new Category();
                             category.setCategoryName(data.getString("CategoryName"));
                             category.items = new ArrayList<>();
-                         //   JSONArray items = data.getJSONArray("Items");
+                            //   JSONArray items = data.getJSONArray("Items");
 /*
                             for (int j=0;j<items.length();j++){
 
                                 JSONObject temp = items.getJSONObject(i);
                                 category.items.add(temp.getString("item"));
                             }*/
-                            category.items.add("ddddddddd");
-                            category.items.add("ddddddddd");
-                            category.items.add("ddddddddd");
-                            category.items.add("ddddddddd");
-                            category.items.add("ddddddddd");
+                            String str = data.getString("Items");
+                            if(str!=null&&!str.equals("No Menu Avaliable")) {
+                                JSONArray itemsJson = new JSONArray(str);
 
-                            deal.categories.add(category);
+                                for (int j = 0; j < itemsJson.length(); j++) {
 
+                                    JSONObject temp = itemsJson.getJSONObject(j);
+                                    category.items.add(new Item(temp.getString("item" + (j + 1))));
+                                }
+                            }
+                            categories.add(category);
+
+                            selectCategory.add(new Category(data.getString("CategoryName"),new ArrayList<Item>()));
                         }
-
-                        listAdapter = new ExpandableListAdapter(getContext(), deal.categories,"Meals");
-
-                        // setting list adapter
-                        expListView.setAdapter(listAdapter);
+                        listAdapter.notifyDataSetChanged();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Log.d("Exception",""+e);
                 }
             }
 
@@ -214,5 +233,29 @@ public class FullDayMealsFragment extends Fragment {
             public void onRetry(int retryNo) {
             }
         });
+    }
+
+    @Override
+    public void ClickChildView(int groupPosition, int childPosition) {
+        for (Item temp : categories.get(groupPosition).items) {
+            if (temp.isCheck()) {
+                temp.setCheck(false);
+            }
+        }
+        selectmeal[groupPosition] = true;
+        categories.get(groupPosition).items.get(childPosition).setCheck(true);
+        Item item = categories.get(groupPosition).items.get(childPosition);
+        selectCategory.get(groupPosition).items = new ArrayList<>();
+        selectCategory.get(groupPosition).items.add(item);
+        listAdapter.notifyDataSetChanged();
+    }
+
+    boolean AllCheck() {
+        for (int i = 0; i < selectmeal.length-1; i++) {//because bevarge menu not availble
+            if (!selectmeal[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 }

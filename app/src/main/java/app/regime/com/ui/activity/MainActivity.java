@@ -187,6 +187,7 @@ public class MainActivity extends AppCompatActivity
         else if (name.equals("HomeFragment")) {
             fragment = new HomeFragment();
         }
+        fragment.setArguments(bundle);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.main_fragment_container, fragment);
         fragmentTransaction.commit();

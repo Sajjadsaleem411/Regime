@@ -34,7 +34,7 @@ public class OfferDayFragment extends Fragment {
     RelativeLayout DaySelect;
     FragmentContact fragmentContact;
     ImageView day_spinner;
-
+    boolean date_flag=false;
     public OfferDayFragment(FragmentContact fragmentContact) {
         this.fragmentContact = fragmentContact;
     }
@@ -86,10 +86,15 @@ public class OfferDayFragment extends Fragment {
             public void onClick(View view) {
                 // startActivity(new Intent(OfferDay.this,FullDayMeal.class));
                 Bundle bundle=new Bundle();
-                bundle.putString("days",DayView.getText().toString());
-                bundle.putString("Amount",TotalAmount.getText().toString());
-                bundle.putString("Date",tv_date.getText().toString());
+                bundle.putString("no_of_days",DayView.getText().toString());
+                bundle.putString("amount",TotalAmount.getText().toString());
+
+                bundle.putString("date",tv_date.getText().toString());
+                if(date_flag)
                 fragmentContact.ChangeFragment("FullDayMealsFragment", bundle);
+                else {
+                    Toast.makeText(getActivity(),"Please select date!",Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -123,7 +128,7 @@ public class OfferDayFragment extends Fragment {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {
                 String date = (i1 + 1) + "/" + i2 + "/" + i;
-
+                date_flag=true;
                 tv_date.setText(date);
                 dialog.dismiss();
                // Toast.makeText(getContext(), "select date " + date, Toast.LENGTH_SHORT).show();

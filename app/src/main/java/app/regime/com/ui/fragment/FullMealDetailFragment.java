@@ -5,10 +5,12 @@ import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.style.UpdateAppearance;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
@@ -21,22 +23,26 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import app.regime.com.R;
 import app.regime.com.model.Category;
 import app.regime.com.model.Deal;
+import app.regime.com.model.Item;
 import app.regime.com.ui.FragmentContact;
 import app.regime.com.ui.adapter.ExpandableListAdapter;
 import app.regime.com.utills.CommonUtils;
 
 @SuppressLint("ValidFragment")
-public class FullMealDetailFragment extends Fragment {
+public class FullMealDetailFragment extends Fragment implements ExpandableListAdapter.UpdateList{
     FragmentContact fragmentContact;
 
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
 
-    Deal deal = new Deal();
+    List<Category> categories=new ArrayList<>();
+    Bundle bundle;
+    Button reset,order;
 
     public FullMealDetailFragment(FragmentContact fragmentContact) {
         this.fragmentContact = fragmentContact;
@@ -46,28 +52,57 @@ public class FullMealDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.full_meal_detail_fragment, container, false);
-
+        categories = (ArrayList<Category>)getArguments().getSerializable("Cat_List");
+        bundle=getArguments();
         expListView = (ExpandableListView) view.findViewById(R.id.lvExp);
-        GetMeals();
+        reset=(Button)view.findViewById(R.id.btn_reset);
+        order=(Button)view.findViewById(R.id.btn_confirm_order);
+        order.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                OrderAPICall();
+            }
+        });
+        reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragmentContact.ChangeFragment("OfferDayFragment",null);
+            }
+        });
+        listAdapter = new ExpandableListAdapter(getContext(), categories,"Details",this);
+
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
+        int count = listAdapter.getGroupCount();
+        for ( int i = 0; i < count; i++ )
+            expListView.expandGroup(i);
+     //   GetMeals();
         return view;
     }
 
-    public void GetMeals() {
+    @Override
+    public void ClickChildView(int index, int child) {
 
-     /*   Intent intent1 = new Intent(SignInActivity.this, MissOutActivity.class);
-        startActivity(intent1);*/
+    }
+    public void OrderAPICall() {
+
+
         final ProgressDialog progressDialog = CommonUtils.showLoadingDialog(getActivity());
         progressDialog.show();
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user", 0);
         RequestParams params = new RequestParams();
+        params.add("no_of_days",bundle.getString("no_of_days"));
+        params.add("amount",bundle.getString("amount"));
+        params.add("date",bundle.getString("date"));
+        params.add("items", String.valueOf(getitemJson()));
         AsyncHttpClient client = new AsyncHttpClient();
         client.addHeader("x-access-key", "UUAU-13T6-10R9-L6R5");
 //        client.addHeader("x-access-token", sharedPreferences.getString("token", ""));
         client.addHeader("x-access-token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo1MjEsIm5hbWUiOiJhYmJhcyIsImlhdCI6MTUxODU5ODkwNH0.Tc36x6e_DNgVSb9PnLyQuXYLjEpBWVgmuju0IXgcUoI");
 
         client.addHeader("Content-Type", "application/x-www-form-urlencoded");
-        client.get("https://regim.herokuapp.com/api/profile/orderDeatils?currentDate=2018-05-21", params, new JsonHttpResponseHandler() {
+        client.post("https://regim.herokuapp.com/api/profile/confirmOrderBooking", params, new JsonHttpResponseHandler() {
             @Override
             public void onStart() {
                 Log.e("response UpdateProfile", "start");
@@ -80,39 +115,16 @@ public class FullMealDetailFragment extends Fragment {
                     progressDialog.dismiss();
                     JSONObject jsonObject = response;
                     int status = jsonObject.getInt("status");
+                    String msg=jsonObject.getString("message");
                     if (status == 200) {
-                        deal.categories = new ArrayList<>();
-                        JSONArray message = jsonObject.getJSONArray("categories");
-                        for (int i = 0; i < message.length(); i++) {
-                            JSONObject data = message.getJSONObject(i);
-                            Category category = new Category();
-                            category.setCategoryName(data.getString("CategoryName"));
-                            category.items = new ArrayList<>();
-                            //   JSONArray items = data.getJSONArray("Items");
-/*
-                            for (int j=0;j<items.length();j++){
+fragmentContact.ChangeFragment("HomeFragment",null);
+                        Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
 
-                                JSONObject temp = items.getJSONObject(i);
-                                category.items.add(temp.getString("item"));
-                            }*/
-                            category.items.add("ddddddddd");
-                            category.items.add("ddddddddd");
-                            category.items.add("ddddddddd");
-                            category.items.add("ddddddddd");
-                            category.items.add("ddddddddd");
-
-                            deal.categories.add(category);
-
-                        }
-
-                        listAdapter = new ExpandableListAdapter(getContext(), deal.categories,"Details");
-
-                        // setting list adapter
-                        expListView.setAdapter(listAdapter);
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                }catch (Exception e){
+
                 }
+
             }
 
             @Override
@@ -126,5 +138,20 @@ public class FullMealDetailFragment extends Fragment {
             public void onRetry(int retryNo) {
             }
         });
+    }
+    JSONArray getitemJson() {
+        JSONArray jsonArray=new JSONArray();
+        JSONObject object=new JSONObject();
+        try {
+
+            for(Category category : categories) {
+                object.put(category.getCategoryName(),category.items.get(0).getName());
+            }
+        }
+        catch (Exception e){
+
+        }
+        jsonArray.put(object);
+        return jsonArray;
     }
 }

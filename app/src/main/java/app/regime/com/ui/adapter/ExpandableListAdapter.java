@@ -23,6 +23,7 @@ import java.util.List;
 
 import app.regime.com.R;
 import app.regime.com.model.Category;
+import app.regime.com.model.Item;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
     //static public boolean notify;
@@ -45,13 +46,20 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context _context;
     String fragment;
+    UpdateList updateList;
     private List<Category> _listDataHeader; // header titles
     // child data in format of header title, child title
+    public interface UpdateList {
 
-    public ExpandableListAdapter(Context context, List<Category> listDataHeader, String fragment) {
+        void ClickChildView(int index,int child);
+
+
+    }
+    public ExpandableListAdapter(Context context, List<Category> listDataHeader, String fragment, UpdateList updateList) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this.fragment = fragment;
+        this.updateList = updateList;
         //   notifyDataSetChanged();
 
     }
@@ -72,7 +80,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         Log.d("", "" + getChild(groupPosition, childPosition));
 
         //    final String childText = (String) getChild(groupPosition, childPosition);
-        String item = _listDataHeader.get(groupPosition).items.get(childPosition);
+        final Item item = _listDataHeader.get(groupPosition).items.get(childPosition);
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
@@ -85,13 +93,29 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     .findViewById(R.id.tv_name_item);
             TextView rank = (TextView) convertView
                     .findViewById(R.id.tv_rank);
-            ImageView check1 = (ImageView) convertView.findViewById(R.id.img_check1);
+            final ImageView check1 = (ImageView) convertView.findViewById(R.id.img_check1);
+            check1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    updateList.ClickChildView(groupPosition,childPosition);
+                    check1.setImageResource(R.mipmap.red);
+                }
+            });
+
+            if(item.isCheck()){
+
+                check1.setImageResource(R.mipmap.red);
+            }
+            else {
+                check1.setImageDrawable(null);
+
+            }
             ImageView check2 = (ImageView) convertView.findViewById(R.id.img_check1);
             if (fragment.equals("Details")) {
                 rank.setVisibility(View.GONE);
                 check2.setVisibility(View.VISIBLE);
             }
-            name.setText(item);
+            name.setText(item.getName());
         }
         return convertView;
     }
