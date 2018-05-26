@@ -107,8 +107,9 @@ public class RegisterFragment extends Fragment {
                 //   boolean checkmobile = validateForNull(Mobile , "Please Enter Mobile No");
                 boolean checkconfirmpassword = validateForNull(ConfirmPassword, "Please Enter Confirm Password");
 
+                callBack.ChangeFragment("LocationFragment", null);
 
-                if (checkemail == true && check == true && checkfirstname && checkconfirmpassword) {
+                /*if (checkemail == true && check == true && checkfirstname && checkconfirmpassword) {
                     if (mPassword.equals(mConfirmPassword)) {
                         if (CheckTermsConditions.isChecked())
                             Register();
@@ -119,7 +120,7 @@ public class RegisterFragment extends Fragment {
 
                         Toast.makeText(getActivity(), "" + "Password not match", Toast.LENGTH_SHORT).show();
                     }
-                }
+                }*/
 
             }
         });

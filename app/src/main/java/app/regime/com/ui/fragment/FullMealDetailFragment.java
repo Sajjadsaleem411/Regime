@@ -34,29 +34,31 @@ import app.regime.com.ui.adapter.ExpandableListAdapter;
 import app.regime.com.utills.CommonUtils;
 
 @SuppressLint("ValidFragment")
-public class FullMealDetailFragment extends Fragment implements ExpandableListAdapter.UpdateList{
+public class FullMealDetailFragment extends Fragment implements ExpandableListAdapter.UpdateList {
     FragmentContact fragmentContact;
 
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
 
-    List<Category> categories=new ArrayList<>();
+    List<Category> categories = new ArrayList<>();
+    ArrayList<ArrayList<Category>> AllDaysSelectCategory = new ArrayList<>();
     Bundle bundle;
-    Button reset,order;
+    Button reset, order;
 
     public FullMealDetailFragment(FragmentContact fragmentContact) {
         this.fragmentContact = fragmentContact;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.full_meal_detail_fragment, container, false);
-        categories = (ArrayList<Category>)getArguments().getSerializable("Cat_List");
-        bundle=getArguments();
+        AllDaysSelectCategory = (ArrayList<ArrayList<Category>>) getArguments().getSerializable("Cat_List");
+        bundle = getArguments();
         expListView = (ExpandableListView) view.findViewById(R.id.lvExp);
-        reset=(Button)view.findViewById(R.id.btn_reset);
-        order=(Button)view.findViewById(R.id.btn_confirm_order);
+        reset = (Button) view.findViewById(R.id.btn_reset);
+        order = (Button) view.findViewById(R.id.btn_confirm_order);
         order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,17 +68,17 @@ public class FullMealDetailFragment extends Fragment implements ExpandableListAd
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fragmentContact.ChangeFragment("OfferDayFragment",null);
+                fragmentContact.ChangeFragment("OfferDayFragment", null);
             }
         });
-        listAdapter = new ExpandableListAdapter(getContext(), categories,"Details",this);
+        listAdapter = new ExpandableListAdapter(getContext(), AllDaysSelectCategory.get(0), "Details", this);
 
         // setting list adapter
         expListView.setAdapter(listAdapter);
         int count = listAdapter.getGroupCount();
-        for ( int i = 0; i < count; i++ )
+        for (int i = 0; i < count; i++)
             expListView.expandGroup(i);
-     //   GetMeals();
+        //   GetMeals();
         return view;
     }
 
@@ -84,6 +86,7 @@ public class FullMealDetailFragment extends Fragment implements ExpandableListAd
     public void ClickChildView(int index, int child) {
 
     }
+
     public void OrderAPICall() {
 
 
@@ -92,9 +95,9 @@ public class FullMealDetailFragment extends Fragment implements ExpandableListAd
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user", 0);
         RequestParams params = new RequestParams();
-        params.add("no_of_days",bundle.getString("no_of_days"));
-        params.add("amount",bundle.getString("amount"));
-        params.add("date",bundle.getString("date"));
+        params.add("no_of_days", bundle.getString("no_of_days"));
+        params.add("amount", bundle.getString("amount"));
+        params.add("date", bundle.getString("date"));
         params.add("items", String.valueOf(getitemJson()));
         AsyncHttpClient client = new AsyncHttpClient();
         client.addHeader("x-access-key", "UUAU-13T6-10R9-L6R5");
@@ -115,13 +118,13 @@ public class FullMealDetailFragment extends Fragment implements ExpandableListAd
                     progressDialog.dismiss();
                     JSONObject jsonObject = response;
                     int status = jsonObject.getInt("status");
-                    String msg=jsonObject.getString("message");
+                    String msg = jsonObject.getString("message");
                     if (status == 200) {
-fragmentContact.ChangeFragment("HomeFragment",null);
+                        fragmentContact.ChangeFragment("HomeFragment", null);
                         Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
 
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
 
@@ -139,19 +142,23 @@ fragmentContact.ChangeFragment("HomeFragment",null);
             }
         });
     }
+
     JSONArray getitemJson() {
-        JSONArray jsonArray=new JSONArray();
-        JSONObject object=new JSONObject();
-        try {
+        JSONArray jsonArray = new JSONArray();
+        for (ArrayList<Category> categoryArrayList : AllDaysSelectCategory) {
+            categories = categoryArrayList;
+            JSONObject object = new JSONObject();
+            try {
 
-            for(Category category : categories) {
-                object.put(category.getCategoryName(),category.items.get(0).getName());
+                for (Category category : categories) {
+                    object.put(category.getCategoryName(), category.items.get(0).getName());
+
+                }
+            } catch (Exception e) {
+
             }
+            jsonArray.put(object);
         }
-        catch (Exception e){
-
-        }
-        jsonArray.put(object);
         return jsonArray;
     }
 }

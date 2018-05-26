@@ -19,6 +19,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pixplicity.easyprefs.library.Prefs;
+
+import java.util.Calendar;
+
 import app.regime.com.R;
 import app.regime.com.ui.FragmentContact;
 
@@ -123,11 +127,15 @@ public class OfferDayFragment extends Fragment {
         dialog.setContentView(R.layout.calender_dialog);
         CalendarView calendarView = (CalendarView) dialog.findViewById(R.id.calender_view);
         ImageView CrossImg = (ImageView) dialog.findViewById(R.id.cross_img);
+        Calendar c = Calendar.getInstance();
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {
                 String date = (i1 + 1) + "/" + i2 + "/" + i;
+                Prefs.putInt("day",i2);
+                Prefs.putInt("month",(i1 + 1));
+                Prefs.putInt("year",i);
                 date_flag=true;
                 tv_date.setText(date);
                 dialog.dismiss();

@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,33 +19,55 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.pixplicity.easyprefs.library.Prefs;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import app.regime.com.R;
 import app.regime.com.model.Category;
 import app.regime.com.model.Deal;
 import app.regime.com.model.Item;
+import app.regime.com.model.Title;
 import app.regime.com.ui.FragmentContact;
 import app.regime.com.ui.adapter.ExpandableListAdapter;
+import app.regime.com.ui.adapter.HorizontalAdapter;
+import app.regime.com.ui.adapter.TitleHorizontalAdapter;
 import app.regime.com.utills.CommonUtils;
+import devs.mulham.horizontalcalendar.HorizontalCalendar;
+import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 
 @SuppressLint("ValidFragment")
-public class FullDayMealsFragment extends Fragment implements ExpandableListAdapter.UpdateList {
+public class FullDayMealsFragment extends Fragment implements ExpandableListAdapter.UpdateList, TitleHorizontalAdapter.CallbackTitle {
     LinearLayout BreakFast, MainCourses, Salads, Soups, Desserts;
     View BreakFastView, MainCoursesView, SaladsView, SoupsView, DessertsView;
     Button btn_select_meal;
     FragmentContact fragmentContact;
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
+
+    RecyclerView horizontal_recycler_view;
+    TitleHorizontalAdapter horizontalAdapter;
+
     ArrayList<Category> selectCategory = new ArrayList<>();
+    ArrayList<ArrayList<Category>> daysselectCategory = new ArrayList<>();
+
+    ArrayList<Title> titles = new ArrayList<>();
+    String dummyDate = "2018-05-20";
+    int intNoOFDays;
     boolean[] selectmeal;
     //   Deal deal = new Deal();
+    boolean[] menuSelectDayCheck;
+    int check_day_index = -1;
+    int current_day = -1;
+    int last_day = -1;
+    String curentDate = "2018-05-20";
+
     List<Category> categories = new ArrayList<>();
 
     public FullDayMealsFragment(FragmentContact fragmentContact) {
@@ -55,46 +79,120 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.full_day_meal_fragment, container, false);
+        Bundle bundle = this.getArguments();
+
+        String strNoOfDays = bundle.getString("no_of_days");
+        intNoOFDays = Integer.parseInt(strNoOfDays);
         expListView = (ExpandableListView) view.findViewById(R.id.lvExp);
-        BreakFast = (LinearLayout) view.findViewById(R.id.braekfast);
+      /*  BreakFast = (LinearLayout) view.findViewById(R.id.braekfast);
         MainCourses = (LinearLayout) view.findViewById(R.id.main_courses);
         Salads = (LinearLayout) view.findViewById(R.id.salads);
         Soups = (LinearLayout) view.findViewById(R.id.soups);
         Desserts = (LinearLayout) view.findViewById(R.id.dessert);
-
-        BreakFastView = (View) view.findViewById(R.id.braekfast_view);
+*/
+  /*      BreakFastView = (View) view.findViewById(R.id.braekfast_view);
         MainCoursesView = (View) view.findViewById(R.id.main_courses_view);
         SaladsView = (View) view.findViewById(R.id.salads_view);
         SoupsView = (View) view.findViewById(R.id.soups_view);
         DessertsView = (View) view.findViewById(R.id.dessert_view);
+  */
         btn_select_meal = (Button) view.findViewById(R.id.btn_select_meal);
+        horizontal_recycler_view = (RecyclerView) view.findViewById(R.id.title_recyleview);
 
-        BreakFast.setVisibility(View.VISIBLE);
+    /*    BreakFast.setVisibility(View.VISIBLE);
         MainCoursesView.setVisibility(View.GONE);
         SaladsView.setVisibility(View.GONE);
         SoupsView.setVisibility(View.GONE);
         DessertsView.setVisibility(View.GONE);
+*/
+
+        horizontalAdapter = new TitleHorizontalAdapter(titles, getActivity(), this);
+
+        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        horizontal_recycler_view.setLayoutManager(horizontalLayoutManager);
+        horizontal_recycler_view.setAdapter(horizontalAdapter);
 
         listAdapter = new ExpandableListAdapter(getContext(), categories, "Meals", FullDayMealsFragment.this);
 
         // setting list adapter
         expListView.setAdapter(listAdapter);
-        GetMeals();
+
+        menuSelectDayCheck = new boolean[intNoOFDays];
+        for (int i = 0; i < intNoOFDays; i++) {
+            menuSelectDayCheck[i] = false;
+        }
+
+        int intStartDate = Prefs.getInt("date", 0);
+        int day = Prefs.getInt("day", 0);
+        int month = Prefs.getInt("month", 0);
+        int year = Prefs.getInt("year", 0);
+        /* starts before 1 month from now */
+        Calendar startDate = Calendar.getInstance();
+
+        //  Toast.makeText(getActivity(), "" + Calendar.DATE, Toast.LENGTH_SHORT).show();
+        startDate.add(Calendar.DATE, 3);
+
+        getMeals(getDateString(startDate));
+
+        /* ends after 1 month from now */
+        Calendar endDate = Calendar.getInstance();
+        endDate.add(Calendar.DATE, intNoOFDays + 2);
+
+        HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(view, R.id.calendarView)
+                .range(startDate, endDate)
+                .datesNumberOnScreen(5)
+                .build();
+
+
+        horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
+            @Override
+            public void onDateSelected(Calendar date, int position) {
+                //do something
+                if (AllCheck()) {
+                    if (!menuSelectDayCheck[check_day_index]) {
+                        daysselectCategory.add(selectCategory);
+                        menuSelectDayCheck[check_day_index] = true;
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "You have not select all category from " + curentDate, Toast.LENGTH_SHORT).show();
+
+                }
+
+                getMeals(getDateString(date));
+                //      Toast.makeText(getContext(), ""+position+" "+getDateString(date), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+
+        //  GetMeals();
 
         btn_select_meal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (AllCheck()) {
-                    Bundle bundle = getArguments();
-                    bundle.putSerializable("Cat_List", selectCategory);
-                    fragmentContact.ChangeFragment("FullMealDetailFragment", bundle);
+                    if (!menuSelectDayCheck[check_day_index]) {
+                        daysselectCategory.add(selectCategory);
+                        menuSelectDayCheck[check_day_index] = true;
+
+                        if (daysselectCategory.size() == intNoOFDays) {
+                            Bundle bundle = getArguments();
+                            bundle.putSerializable("Cat_List", daysselectCategory);
+
+                            fragmentContact.ChangeFragment("FullMealDetailFragment", bundle);
+                        } else {
+                            Toast.makeText(getActivity(), "Please select all days menu!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 } else {
-                    Toast.makeText(getActivity(), "Please select all category", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Please select all category!", Toast.LENGTH_SHORT).show();
+
                 }
+
             }
         });
 
-        BreakFast.setOnClickListener(new View.OnClickListener() {
+  /*      BreakFast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -151,12 +249,20 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
                 BreakFastView.setVisibility(View.GONE);
             }
         });
+  */
         return view;
     }
 
+    public void updateCheckIndex() {
+        if (last_day < current_day) {
+            check_day_index++;
+        } else {
+            check_day_index--;
+        }
+    }
 
-    public void GetMeals() {
-
+    public void getMeals(String date) {
+        updateCheckIndex();
      /*   Intent intent1 = new Intent(SignInActivity.this, MissOutActivity.class);
         startActivity(intent1);*/
         final ProgressDialog progressDialog = CommonUtils.showLoadingDialog(getActivity());
@@ -170,7 +276,7 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
         client.addHeader("x-access-token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo1MjEsIm5hbWUiOiJhYmJhcyIsImlhdCI6MTUxODU5ODkwNH0.Tc36x6e_DNgVSb9PnLyQuXYLjEpBWVgmuju0IXgcUoI");
 
         client.addHeader("Content-Type", "application/x-www-form-urlencoded");
-        client.get("https://regim.herokuapp.com/api/profile/orderDeatils?currentDate=2018-05-21", params, new JsonHttpResponseHandler() {
+        client.get("https://regim.herokuapp.com/api/profile/orderDeatils?currentDate=" + dummyDate, params, new JsonHttpResponseHandler() {
             @Override
             public void onStart() {
                 Log.e("response UpdateProfile", "start");
@@ -183,6 +289,9 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
                     progressDialog.dismiss();
                     JSONObject jsonObject = response;
                     int status = jsonObject.getInt("status");
+                    categories.clear();
+                    titles.clear();
+                    selectCategory = new ArrayList<>();
                     if (status == 200) {
                         JSONArray message = jsonObject.getJSONArray("categories");
 
@@ -201,7 +310,7 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
                                 category.items.add(temp.getString("item"));
                             }*/
                             String str = data.getString("Items");
-                            if(str!=null&&!str.equals("No Menu Avaliable")) {
+                            if (str != null && !str.contains("No Menu Avaliable")) {
                                 JSONArray itemsJson = new JSONArray(str);
 
                                 for (int j = 0; j < itemsJson.length(); j++) {
@@ -212,13 +321,19 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
                             }
                             categories.add(category);
 
-                            selectCategory.add(new Category(data.getString("CategoryName"),new ArrayList<Item>()));
+                            selectCategory.add(new Category(data.getString("CategoryName"), new ArrayList<Item>()));
+                            titles.add(new Title(data.getString("CategoryName")));
                         }
+                        titles.get(0).setSelect(true);
                         listAdapter.notifyDataSetChanged();
+                        horizontalAdapter.notifyDataSetChanged();
+                        int count = listAdapter.getGroupCount();
+                        for (int i = 0; i < count; i++)
+                            expListView.expandGroup(i);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Log.d("Exception",""+e);
+                    Log.d("Exception", "" + e);
                 }
             }
 
@@ -237,25 +352,56 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
 
     @Override
     public void ClickChildView(int groupPosition, int childPosition) {
-        for (Item temp : categories.get(groupPosition).items) {
+        /*for (Item temp : categories.get(groupPosition).items) {
             if (temp.isCheck()) {
                 temp.setCheck(false);
             }
-        }
+        }*/
         selectmeal[groupPosition] = true;
         categories.get(groupPosition).items.get(childPosition).setCheck(true);
         Item item = categories.get(groupPosition).items.get(childPosition);
-        selectCategory.get(groupPosition).items = new ArrayList<>();
+        //  selectCategory.get(groupPosition).items = new ArrayList<>();
         selectCategory.get(groupPosition).items.add(item);
         listAdapter.notifyDataSetChanged();
     }
 
     boolean AllCheck() {
-        for (int i = 0; i < selectmeal.length-1; i++) {//because bevarge menu not availble
+        for (int i = 0; i < selectmeal.length - 1; i++) {//because bevarge menu not availble
             if (!selectmeal[i]) {
                 return false;
             }
         }
         return true;
+    }
+
+    public String getDateString(Calendar date) {
+
+        int year = date.get(Calendar.YEAR);
+        int month = date.get(Calendar.MONTH) + 1;
+        int day = date.get(Calendar.DAY_OF_MONTH);
+        String dateStr = "" + year + "-" + month + "-" + day;
+
+        last_day = current_day;
+        current_day = day;
+        curentDate = dateStr;
+
+        return dateStr;
+    }
+
+    @Override
+    public void ClickChildView(final int index) {
+        for (Title title : titles) {
+            if (title.isSelect()) {
+                title.setSelect(false);
+            }
+        }
+        titles.get(index).setSelect(true);
+        horizontalAdapter.notifyDataSetChanged();
+        expListView.post(new Runnable() {
+            @Override
+            public void run() {
+                expListView.setSelection(index);
+            }
+        });
     }
 }
