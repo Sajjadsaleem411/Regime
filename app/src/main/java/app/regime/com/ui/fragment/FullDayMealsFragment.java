@@ -55,7 +55,8 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
     TitleHorizontalAdapter horizontalAdapter;
 
     ArrayList<Category> selectCategory = new ArrayList<>();
-    ArrayList<ArrayList<Category>> daysselectCategory = new ArrayList<>();
+    ArrayList<Category>[] daysselectCategory;
+    int size = 0;
 
     ArrayList<Title> titles = new ArrayList<>();
     String dummyDate = "2018-05-20";
@@ -84,27 +85,12 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
         String strNoOfDays = bundle.getString("no_of_days");
         intNoOFDays = Integer.parseInt(strNoOfDays);
         expListView = (ExpandableListView) view.findViewById(R.id.lvExp);
-      /*  BreakFast = (LinearLayout) view.findViewById(R.id.braekfast);
-        MainCourses = (LinearLayout) view.findViewById(R.id.main_courses);
-        Salads = (LinearLayout) view.findViewById(R.id.salads);
-        Soups = (LinearLayout) view.findViewById(R.id.soups);
-        Desserts = (LinearLayout) view.findViewById(R.id.dessert);
-*/
-  /*      BreakFastView = (View) view.findViewById(R.id.braekfast_view);
-        MainCoursesView = (View) view.findViewById(R.id.main_courses_view);
-        SaladsView = (View) view.findViewById(R.id.salads_view);
-        SoupsView = (View) view.findViewById(R.id.soups_view);
-        DessertsView = (View) view.findViewById(R.id.dessert_view);
-  */
+
+        daysselectCategory = new ArrayList[intNoOFDays];
         btn_select_meal = (Button) view.findViewById(R.id.btn_select_meal);
         horizontal_recycler_view = (RecyclerView) view.findViewById(R.id.title_recyleview);
 
-    /*    BreakFast.setVisibility(View.VISIBLE);
-        MainCoursesView.setVisibility(View.GONE);
-        SaladsView.setVisibility(View.GONE);
-        SoupsView.setVisibility(View.GONE);
-        DessertsView.setVisibility(View.GONE);
-*/
+
 
         horizontalAdapter = new TitleHorizontalAdapter(titles, getActivity(), this);
 
@@ -149,10 +135,13 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
             public void onDateSelected(Calendar date, int position) {
                 //do something
                 if (AllCheck()) {
+                    daysselectCategory[check_day_index] = selectCategory;
+
                     if (!menuSelectDayCheck[check_day_index]) {
-                        daysselectCategory.add(selectCategory);
                         menuSelectDayCheck[check_day_index] = true;
+                        size++;
                     }
+
                 } else {
                     Toast.makeText(getActivity(), "You have not select all category from " + curentDate, Toast.LENGTH_SHORT).show();
 
@@ -171,19 +160,21 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
             @Override
             public void onClick(View v) {
                 if (AllCheck()) {
+                    daysselectCategory[check_day_index] = selectCategory;
                     if (!menuSelectDayCheck[check_day_index]) {
-                        daysselectCategory.add(selectCategory);
                         menuSelectDayCheck[check_day_index] = true;
-
-                        if (daysselectCategory.size() == intNoOFDays) {
-                            Bundle bundle = getArguments();
-                            bundle.putSerializable("Cat_List", daysselectCategory);
-
-                            fragmentContact.ChangeFragment("FullMealDetailFragment", bundle);
-                        } else {
-                            Toast.makeText(getActivity(), "Please select all days menu!", Toast.LENGTH_SHORT).show();
-                        }
+                        size++;
                     }
+
+                    if (size == intNoOFDays) {
+                        Bundle bundle = getArguments();
+                        bundle.putSerializable("Cat_List", daysselectCategory);
+
+                        fragmentContact.ChangeFragment("FullMealDetailFragment", bundle);
+                    } else {
+                        Toast.makeText(getActivity(), "Please select all days menu!", Toast.LENGTH_SHORT).show();
+                    }
+
                 } else {
                     Toast.makeText(getActivity(), "Please select all category!", Toast.LENGTH_SHORT).show();
 
@@ -192,64 +183,6 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
             }
         });
 
-  /*      BreakFast.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                BreakFastView.setVisibility(View.VISIBLE);
-
-                MainCoursesView.setVisibility(View.GONE);
-                SaladsView.setVisibility(View.GONE);
-                SoupsView.setVisibility(View.GONE);
-                DessertsView.setVisibility(View.GONE);
-
-            }
-        });
-
-        MainCourses.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainCoursesView.setVisibility(View.VISIBLE);
-                BreakFastView.setVisibility(View.GONE);
-                SaladsView.setVisibility(View.GONE);
-                SoupsView.setVisibility(View.GONE);
-                DessertsView.setVisibility(View.GONE);
-            }
-        });
-
-        Salads.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SaladsView.setVisibility(View.VISIBLE);
-                MainCoursesView.setVisibility(View.GONE);
-                BreakFastView.setVisibility(View.GONE);
-                SoupsView.setVisibility(View.GONE);
-                DessertsView.setVisibility(View.GONE);
-            }
-        });
-
-        Soups.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SoupsView.setVisibility(View.VISIBLE);
-                SaladsView.setVisibility(View.GONE);
-                MainCoursesView.setVisibility(View.GONE);
-                BreakFastView.setVisibility(View.GONE);
-                DessertsView.setVisibility(View.GONE);
-            }
-        });
-
-        Desserts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DessertsView.setVisibility(View.VISIBLE);
-                SoupsView.setVisibility(View.GONE);
-                SaladsView.setVisibility(View.GONE);
-                MainCoursesView.setVisibility(View.GONE);
-                BreakFastView.setVisibility(View.GONE);
-            }
-        });
-  */
         return view;
     }
 
@@ -362,6 +295,24 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
         Item item = categories.get(groupPosition).items.get(childPosition);
         //  selectCategory.get(groupPosition).items = new ArrayList<>();
         selectCategory.get(groupPosition).items.add(item);
+        listAdapter.notifyDataSetChanged();
+/*
+
+        selectmeal[groupPosition] = true;
+        if(!categories.get(groupPosition).items.get(childPosition).isCheck()){
+
+            categories.get(groupPosition).items.get(childPosition).setCheck(true);
+            Item item = categories.get(groupPosition).items.get(childPosition);
+            selectCategory.get(groupPosition).items.add(item);
+
+        }
+        else {
+            categories.get(groupPosition).items.get(childPosition).setCheck(false);
+            selectCategory.get(groupPosition).items.remove(childPosition);
+
+        }
+*/
+        //  selectCategory.get(groupPosition).items = new ArrayList<>();
         listAdapter.notifyDataSetChanged();
     }
 

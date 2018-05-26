@@ -41,7 +41,7 @@ public class FullMealDetailFragment extends Fragment implements ExpandableListAd
     ExpandableListView expListView;
 
     List<Category> categories = new ArrayList<>();
-    ArrayList<ArrayList<Category>> AllDaysSelectCategory = new ArrayList<>();
+    ArrayList<Category>[] AllDaysSelectCategory;
     Bundle bundle;
     Button reset, order;
 
@@ -54,7 +54,7 @@ public class FullMealDetailFragment extends Fragment implements ExpandableListAd
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.full_meal_detail_fragment, container, false);
-        AllDaysSelectCategory = (ArrayList<ArrayList<Category>>) getArguments().getSerializable("Cat_List");
+        AllDaysSelectCategory = (ArrayList<Category>[]) getArguments().getSerializable("Cat_List");
         bundle = getArguments();
         expListView = (ExpandableListView) view.findViewById(R.id.lvExp);
         reset = (Button) view.findViewById(R.id.btn_reset);
@@ -71,7 +71,7 @@ public class FullMealDetailFragment extends Fragment implements ExpandableListAd
                 fragmentContact.ChangeFragment("OfferDayFragment", null);
             }
         });
-        listAdapter = new ExpandableListAdapter(getContext(), AllDaysSelectCategory.get(0), "Details", this);
+        listAdapter = new ExpandableListAdapter(getContext(), AllDaysSelectCategory[0], "Details", this);
 
         // setting list adapter
         expListView.setAdapter(listAdapter);
@@ -153,6 +153,14 @@ public class FullMealDetailFragment extends Fragment implements ExpandableListAd
                 for (Category category : categories) {
                     object.put(category.getCategoryName(), category.items.get(0).getName());
 
+                   /* if (category.items.size() > 1) {
+                        object.put(category.getCategoryName(), category.items.get(0).getName());
+                    } else {
+                        for (int i = 1; i <= category.items.size(); i++) {
+                            object.put(category.getCategoryName()+""+i, category.items.get(i-1).getName());
+
+                        }
+                    }*/
                 }
             } catch (Exception e) {
 
