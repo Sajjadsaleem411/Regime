@@ -84,9 +84,9 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if (currentfragment.equals("FullMealDetailFragment")) {
+           /* if (currentfragment.equals("FullMealDetailFragment")) {
                 ChangeFragment("FullDayMealsFragment", null);
-            } else if (currentfragment.equals("FullDayMealsFragment")) {
+            } else */if (currentfragment.equals("FullDayMealsFragment")) {
                 ChangeFragment("OfferDayFragment", null);
             } else if (currentfragment.equals("OfferDayFragment")) {
                 ChangeFragment("OfferDealsFragment", null);

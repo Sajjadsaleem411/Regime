@@ -19,12 +19,21 @@ public class Category implements Serializable{
     @SerializedName("DailyImages")
     @Expose
     private String dailyImages;
+    private String date;
     public  Category(){
 
     }
     public Category(String categoryName,List<Item> items){
         this.items=items;
         this.categoryName=categoryName;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getCategoryName() {
