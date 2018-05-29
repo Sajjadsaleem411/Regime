@@ -24,8 +24,18 @@ public class CommonUtils {
     public static DecimalFormat decimalFormat = new DecimalFormat("#.##");
     public static SimpleDateFormat Dateformat = new SimpleDateFormat(
             "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+
+    public static String[] multipleSelectCategory = {"MainCourse", "Salad", "Soup"};
     private CommonUtils() {
         // This utility class is not publicly instantiable
+    }
+    public static boolean isMultipleSelect_onFullDay(String name) {
+        for (String category : multipleSelectCategory) {
+            if (category.equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static ProgressDialog showLoadingDialog(Context context) {

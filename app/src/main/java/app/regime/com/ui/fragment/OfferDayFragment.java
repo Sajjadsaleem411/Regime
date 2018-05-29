@@ -7,12 +7,15 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -21,7 +24,10 @@ import android.widget.Toast;
 
 import com.pixplicity.easyprefs.library.Prefs;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import app.regime.com.R;
 import app.regime.com.ui.FragmentContact;
@@ -32,13 +38,14 @@ import app.regime.com.ui.FragmentContact;
 
 @SuppressLint("ValidFragment")
 public class OfferDayFragment extends Fragment {
-    TextView FullDayMeals, LunchMeals, DayView, PriceView, TotalAmount,tv_amount_title,tv_date;
+    TextView types_of_meal, PriceView, TotalAmount, tv_amount_title, tv_date;
+    EditText DayView;
     Button Confirm;
     LinearLayout ChooseDate;
     RelativeLayout DaySelect;
     FragmentContact fragmentContact;
-    ImageView day_spinner;
-    boolean date_flag=false;
+    boolean date_flag = true, days_flag = false;
+
     public OfferDayFragment(FragmentContact fragmentContact) {
         this.fragmentContact = fragmentContact;
     }
@@ -49,59 +56,69 @@ public class OfferDayFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_day_deals, container, false);
         Confirm = (Button) view.findViewById(R.id.confirm);
-        FullDayMeals = (TextView) view.findViewById(R.id.full_day_meals);
-        LunchMeals = (TextView) view.findViewById(R.id.lunch_only);
-        DayView = (TextView) view.findViewById(R.id.day_view);
+        types_of_meal = (TextView) view.findViewById(R.id.types_of_meal);
+        DayView = (EditText) view.findViewById(R.id.day_view);
         tv_date = (TextView) view.findViewById(R.id.tv_date);
         PriceView = (TextView) view.findViewById(R.id.price_view);
         TotalAmount = (TextView) view.findViewById(R.id.total_amount);
         tv_amount_title = (TextView) view.findViewById(R.id.tv_total_amount_title);
         ChooseDate = (LinearLayout) view.findViewById(R.id.linear_layout);
         DaySelect = (RelativeLayout) view.findViewById(R.id.relative_layout);
-        day_spinner = (ImageView) view.findViewById(R.id.img_day_spinner);
 
 
-        day_spinner.setOnClickListener(new View.OnClickListener() {
+        Bundle bundle = this.getArguments();
+        String type_of_meal = bundle.getString("type_of_meal");
+        if (type_of_meal.equalsIgnoreCase("Full Day Meal")) {
+            PriceView.setText("85");
+        } else if (type_of_meal.equalsIgnoreCase("Lunch Only")) {
+            PriceView.setText("55");
+        }
+
+        types_of_meal.setText(type_of_meal);
+
+        DayView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View view) {
-                Spinner_Days();
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(!charSequence.toString().equalsIgnoreCase("")){
+                    days_flag = true;
+                    int total = Integer.parseInt(DayView.getText().toString()) * Integer.parseInt(PriceView.getText().toString());
+                    TotalAmount.setText("" + charSequence);
+                    tv_amount_title.setText("" + total+" SR");
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
 
             }
         });
-
-        FullDayMeals.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        LunchMeals.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
         Confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // startActivity(new Intent(OfferDay.this,FullDayMeal.class));
-                Bundle bundle=new Bundle();
-                bundle.putString("no_of_days",DayView.getText().toString());
-                bundle.putString("amount",TotalAmount.getText().toString());
+                Bundle bundle = getArguments();
+                bundle.putString("no_of_days", DayView.getText().toString());
+                bundle.putString("amount", TotalAmount.getText().toString());
 
-                bundle.putString("date",tv_date.getText().toString());
-                if(date_flag)
-                fragmentContact.ChangeFragment("FullDayMealsFragment", bundle);
+                bundle.putString("date", tv_date.getText().toString());
+                if (date_flag && days_flag)
+                    fragmentContact.ChangeFragment("FullDayMealsFragment", bundle);
                 else {
-                    Toast.makeText(getActivity(),"Please select date!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Please select numbr of days!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        String formattedDate = df.format(c);
 
+        tv_date.setText(formattedDate);
         ChooseDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,13 +150,13 @@ public class OfferDayFragment extends Fragment {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {
                 String date = (i1 + 1) + "/" + i2 + "/" + i;
-                Prefs.putInt("day",i2);
-                Prefs.putInt("month",(i1 + 1));
-                Prefs.putInt("year",i);
-                date_flag=true;
+                Prefs.putInt("day", i2);
+                Prefs.putInt("month", (i1 + 1));
+                Prefs.putInt("year", i);
+                date_flag = true;
                 tv_date.setText(date);
                 dialog.dismiss();
-               // Toast.makeText(getContext(), "select date " + date, Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getContext(), "select date " + date, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -168,16 +185,17 @@ public class OfferDayFragment extends Fragment {
 
                 dialog.dismiss();
                 DayView.setText(types[which]);
-                int total= Integer.parseInt(DayView.getText().toString())*Integer.parseInt(PriceView.getText().toString());
-                TotalAmount.setText(""+total);
-                tv_amount_title.setText(""+total);
-            //    Toast.makeText(getContext(), types[which], Toast.LENGTH_SHORT).show();
+                days_flag = true;
+                int total = Integer.parseInt(DayView.getText().toString()) * Integer.parseInt(PriceView.getText().toString());
+                TotalAmount.setText("" + total);
+                tv_amount_title.setText("" + total);
+                //    Toast.makeText(getContext(), types[which], Toast.LENGTH_SHORT).show();
 
             }
 
         });
 
-     //   b.show();
+        //   b.show();
 
         AlertDialog alertDialog = b.create();
         alertDialog.show();

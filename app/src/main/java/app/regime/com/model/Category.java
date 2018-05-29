@@ -20,12 +20,21 @@ public class Category implements Serializable{
     @Expose
     private String dailyImages;
     private String date;
+    private boolean isFullDay;
     public  Category(){
 
     }
     public Category(String categoryName,List<Item> items){
         this.items=items;
         this.categoryName=categoryName;
+    }
+
+    public boolean isFullDay() {
+        return isFullDay;
+    }
+
+    public void setFullDay(boolean fullDay) {
+        isFullDay = fullDay;
     }
 
     public String getDate() {

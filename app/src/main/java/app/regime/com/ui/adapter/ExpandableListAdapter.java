@@ -25,41 +25,34 @@ import app.regime.com.R;
 import app.regime.com.model.Category;
 import app.regime.com.model.Item;
 
+import static app.regime.com.utills.CommonUtils.isMultipleSelect_onFullDay;
+
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
     //static public boolean notify;
     DecimalFormat decimalFormat = new DecimalFormat("#.##");
     int size;
-
-
-/*
-    public interface UpdateList {
-        void Notify(int index);
-
-        void ClickGroupView(int index);
-
-        void delete(int position);
-
-        void ChangeQuantity(int position);
-
-    }
-*/
+    boolean flag_detail=false;
 
     private Context _context;
     String fragment;
     UpdateList updateList;
     private List<Category> _listDataHeader; // header titles
+    boolean isFullDay;
+
     // child data in format of header title, child title
     public interface UpdateList {
 
-        void ClickChildView(int index,int child);
+        void ClickChildView(int index, int child, boolean isFullDay);
 
 
     }
-    public ExpandableListAdapter(Context context, List<Category> listDataHeader, String fragment, UpdateList updateList) {
+
+    public ExpandableListAdapter(Context context, List<Category> listDataHeader, String fragment, UpdateList updateList, boolean isFullDay) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this.fragment = fragment;
         this.updateList = updateList;
+        this.isFullDay = isFullDay;
         //   notifyDataSetChanged();
 
     }
@@ -94,27 +87,57 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             TextView rank = (TextView) convertView
                     .findViewById(R.id.tv_rank);
             final ImageView check1 = (ImageView) convertView.findViewById(R.id.img_check1);
+            final ImageView check2 = (ImageView) convertView.findViewById(R.id.img_check2);
+            if (fragment.equals("Details")&&isFullDay) {
+                rank.setVisibility(View.GONE);
+                check2.setVisibility(View.VISIBLE);
+                flag_detail=true;
+            }
+            if (isFullDay) {
+                if (isMultipleSelect_onFullDay(_listDataHeader.get(groupPosition).getCategoryName())) {
+
+                    check2.setVisibility(View.VISIBLE);
+                } else {
+
+                    check2.setVisibility(View.GONE);
+                }
+            } else {
+
+                check2.setVisibility(View.GONE);
+            }
+
             check1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    updateList.ClickChildView(groupPosition,childPosition);
+                    updateList.ClickChildView(groupPosition, childPosition, false);
                     check1.setImageResource(R.mipmap.red);
                 }
             });
 
-            if(item.isCheck()){
+            check2.setOnClickListener(new View.OnClickListener() {
+                @Override                public void onClick(View view) {
+                    updateList.ClickChildView(groupPosition, childPosition, true);
+                    check2.setImageResource(R.mipmap.green1);
+                }
+            });
+
+
+            if (item.isCheck1()) {
 
                 check1.setImageResource(R.mipmap.red);
-            }
-            else {
+                if (item.isCheck2()) {
+                    check2.setVisibility(View.VISIBLE);
+                    check2.setImageResource(R.mipmap.green1);
+                }
+            } else if (item.isCheck2()) {
+                check2.setVisibility(View.VISIBLE);
+                check2.setImageResource(R.mipmap.green1);
+            } else {
                 check1.setImageDrawable(null);
+                check2.setImageDrawable(null);
 
             }
-            ImageView check2 = (ImageView) convertView.findViewById(R.id.img_check1);
-            if (fragment.equals("Details")) {
-                rank.setVisibility(View.GONE);
-                check2.setVisibility(View.VISIBLE);
-            }
+
             name.setText(item.getName());
         }
         return convertView;

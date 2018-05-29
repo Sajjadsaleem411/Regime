@@ -290,6 +290,7 @@
             android:orientation="vertical">
 
             <RelativeLayout
+                android:id="@+id/areaSelect"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border"
@@ -304,6 +305,7 @@
                     android:layout_centerVertical="true"
                     />
                 <TextView
+                    android:id="@+id/textViewArea"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Area Choose"

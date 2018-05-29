@@ -68,10 +68,10 @@ public class FullMealDetailFragment extends Fragment implements ExpandableListAd
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fragmentContact.ChangeFragment("OfferDayFragment", null);
+                fragmentContact.ChangeFragment("OfferDealsFragment", null);
             }
         });
-        listAdapter = new ExpandableListAdapter(getContext(), AllDaysSelectCategory[0], "Details", this);
+        listAdapter = new ExpandableListAdapter(getContext(), AllDaysSelectCategory[0], "Details", this,true);
 
         // setting list adapter
         expListView.setAdapter(listAdapter);
@@ -83,7 +83,7 @@ public class FullMealDetailFragment extends Fragment implements ExpandableListAd
     }
 
     @Override
-    public void ClickChildView(int index, int child) {
+    public void ClickChildView(int index, int child,boolean flag) {
 
     }
 
@@ -151,16 +151,18 @@ public class FullMealDetailFragment extends Fragment implements ExpandableListAd
             try {
 
                 for (Category category : categories) {
-                    object.put(category.getCategoryName(), category.items.get(0).getName());
+                  //  object.put(category.getCategoryName(), category.items.get(0).getName());
 
-                   /* if (category.items.size() > 1) {
+                    if (category.items.size()== 1) {
                         object.put(category.getCategoryName(), category.items.get(0).getName());
                     } else {
                         for (int i = 1; i <= category.items.size(); i++) {
                             object.put(category.getCategoryName()+""+i, category.items.get(i-1).getName());
 
                         }
-                    }*/
+                    }
+                    object.put("Date", category.getDate());
+
                 }
             } catch (Exception e) {
 

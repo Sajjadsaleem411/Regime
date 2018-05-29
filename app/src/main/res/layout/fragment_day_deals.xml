@@ -41,29 +41,12 @@
         >
 
         <TextView
-            android:id="@+id/full_day_meals"
+            android:id="@+id/types_of_meal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="FULL DAY MEALS "
             android:maxLines="1"
-            android:padding="10dp"
-            android:paddingLeft="20dp"
-            android:textColor="#000000"
-            android:layout_weight="1"
-            />
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="40dp"
-            android:background="#000000" />
-
-        <TextView
-            android:id="@+id/lunch_only"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text=" LUNCH ONLY"
             android:padding="10dp"
             android:paddingLeft="20dp"
             android:textColor="#000000"
@@ -105,24 +88,26 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
                 android:textSize="20sp"/>
-            <TextView
+            <EditText
                 android:id="@+id/day_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/day_text"
                 android:layout_centerVertical="true"
+                android:background="@null"
+                android:inputType="number"
                 android:gravity="center"
-                android:text="1"
+                android:hint="Enter number of days."
                 android:layout_marginLeft="10dp"
                 />
-            <ImageView
+            <!--<ImageView
                 android:id="@+id/img_day_spinner"
                 android:layout_width="20dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/down_arrow_icon"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
-                android:layout_alignParentRight="true"/>
+                android:layout_alignParentRight="true"/>-->
            <!-- <Spinner
                 android:id="@+id/spinner"
                 android:layout_width="fill_parent"
@@ -199,7 +184,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="1000"/>
+                android:text="0"/>
         </LinearLayout>
         <TextView
             android:layout_width="0dp"

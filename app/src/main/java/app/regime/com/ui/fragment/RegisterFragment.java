@@ -1,7 +1,9 @@
 package app.regime.com.ui.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -13,6 +15,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +46,7 @@ import static app.regime.com.utills.CommonUtils.validateForNull;
 public class RegisterFragment extends Fragment {
     FragmentContact callBack;
     EditText FirstName, MiddleName, LastName, Mobile, Email, Password, ConfirmPassword;
-    TextView TermsConditions;
+    TextView TermsConditions, textViewArea;
     RadioButton Male, Female, Makkah, Madinah, Jeddah;
     CheckBox CheckTermsConditions;
     Button AddLocation;
@@ -54,6 +57,7 @@ public class RegisterFragment extends Fragment {
     String mEmail = "";
     String mPassword = "";
     String mConfirmPassword = "";
+    RelativeLayout areaSelect;
 
     public RegisterFragment(FragmentContact back) {
         callBack = back;
@@ -74,6 +78,7 @@ public class RegisterFragment extends Fragment {
         final EditText ConfirmPassword = (EditText) view.findViewById(R.id.confirm_pass_text);
         final EditText Mobile = (EditText) view.findViewById(R.id.mobile_text);
         TermsConditions = (TextView) view.findViewById(R.id.terms_conditions);
+        textViewArea = (TextView) view.findViewById(R.id.textViewArea);
         CheckTermsConditions = (CheckBox) view.findViewById(R.id.check_terms);
         Male = (RadioButton) view.findViewById(R.id.radio_male);
         Female = (RadioButton) view.findViewById(R.id.radio_female);
@@ -81,7 +86,13 @@ public class RegisterFragment extends Fragment {
         Makkah = (RadioButton) view.findViewById(R.id.radio_makkah);
         Madinah = (RadioButton) view.findViewById(R.id.radio_madinah);
         AddLocation = (Button) view.findViewById(R.id.Locationbtn);
-
+        areaSelect = (RelativeLayout)view.findViewById(R.id.areaSelect);
+        areaSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Spinner_Days();
+            }
+        });
 
         final String abc = Email.getEditableText().toString().trim();
         final String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
@@ -107,9 +118,9 @@ public class RegisterFragment extends Fragment {
                 //   boolean checkmobile = validateForNull(Mobile , "Please Enter Mobile No");
                 boolean checkconfirmpassword = validateForNull(ConfirmPassword, "Please Enter Confirm Password");
 
-                callBack.ChangeFragment("LocationFragment", null);
+                /*callBack.ChangeFragment("LocationFragment", null);*/
 
-                /*if (checkemail == true && check == true && checkfirstname && checkconfirmpassword) {
+                if (checkemail == true && check == true && checkfirstname && checkconfirmpassword) {
                     if (mPassword.equals(mConfirmPassword)) {
                         if (CheckTermsConditions.isChecked())
                             Register();
@@ -120,7 +131,7 @@ public class RegisterFragment extends Fragment {
 
                         Toast.makeText(getActivity(), "" + "Password not match", Toast.LENGTH_SHORT).show();
                     }
-                }*/
+                }
 
             }
         });
@@ -186,5 +197,31 @@ public class RegisterFragment extends Fragment {
                 progressDialog.dismiss();
             }
         });
+    }
+
+    public void Spinner_Days() {
+        AlertDialog.Builder b = new AlertDialog.Builder(getActivity());
+
+        b.setTitle("which area to select?");
+        final String[] types = {"King Abdul Aziz Airport", "Al Marwa", "Al Safa", "Al Nuzha", "Al Naeem", "Al Nahda", "Al Zahra", "Al Selama", "Al Bawade", "Al Rabwa",
+                "Al Khaldeyya", "Al Rawda", "Al Safa", "Al Rehab", "Al Aziziyya", "Al Andalus", "Al Hamra", "Al Naseem", "Al Balad"};
+
+        b.setItems(types, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                textViewArea.setText(types[which]);
+                dialog.dismiss();
+
+                //    Toast.makeText(getContext(), types[which], Toast.LENGTH_SHORT).show();
+
+            }
+
+        });
+
+        //   b.show();
+
+        AlertDialog alertDialog = b.create();
+        alertDialog.show();
+        alertDialog.getWindow().setLayout(1400, 800);
     }
 }

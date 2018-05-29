@@ -168,6 +168,7 @@
                 tools:layout_editor_absoluteX="0dp">
 
                 <TextView
+                    android:id="@+id/tv_title_meal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="FULL DAY MEAL"
@@ -175,6 +176,7 @@
                     android:textSize="25sp" />
 
                 <TextView
+                    android:id="@+id/tv_day_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"

@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity
         if (name != null) {
             ChangeFragment(name, null);
         } else {
-            Fragment workFragment = new HomeFragment();
+            Fragment workFragment = new HomeFragment(this);
             fragmentTransaction.replace(R.id.main_fragment_container, workFragment);
             fragmentTransaction.commit(); // save the changes
         }
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity
            /* if (currentfragment.equals("FullMealDetailFragment")) {
                 ChangeFragment("FullDayMealsFragment", null);
             } else */if (currentfragment.equals("FullDayMealsFragment")) {
-                ChangeFragment("OfferDayFragment", null);
+                ChangeFragment("OfferDealsFragment", null);
             } else if (currentfragment.equals("OfferDayFragment")) {
                 ChangeFragment("OfferDealsFragment", null);
             } else if (currentfragment.equals("OfferDealsFragment")) {
@@ -130,15 +130,10 @@ public class MainActivity extends AppCompatActivity
        /* if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
-
         } else if (id == R.id.nav_slideshow) {
-
         } else if (id == R.id.nav_manage) {
-
         } else if (id == R.id.nav_share) {
-
         } else if (id == R.id.nav_send) {
-
         }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -150,7 +145,7 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment fragment = null;
         if (id == R.id.action_home) {
-            fragment = new HomeFragment();
+            fragment = new HomeFragment(this);
 
         } else if (id == R.id.action_menu) {
             fragment = new MenuFragment();
@@ -185,7 +180,7 @@ public class MainActivity extends AppCompatActivity
             fragment = new SignInFragment(this);
         }
         else if (name.equals("HomeFragment")) {
-            fragment = new HomeFragment();
+            fragment = new HomeFragment(this);
         }
         fragment.setArguments(bundle);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

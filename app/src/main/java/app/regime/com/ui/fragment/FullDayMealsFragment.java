@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -25,8 +26,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import app.regime.com.R;
@@ -41,6 +44,9 @@ import app.regime.com.ui.adapter.TitleHorizontalAdapter;
 import app.regime.com.utills.CommonUtils;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
+
+import static app.regime.com.utills.CommonUtils.isMultipleSelect_onFullDay;
+import static app.regime.com.utills.CommonUtils.multipleSelectCategory;
 
 @SuppressLint("ValidFragment")
 public class FullDayMealsFragment extends Fragment implements ExpandableListAdapter.UpdateList, TitleHorizontalAdapter.CallbackTitle {
@@ -57,8 +63,8 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
     ArrayList<Category> selectCategory = new ArrayList<>();
     ArrayList<Category>[] daysselectCategory;
     ArrayList<Category>[] daysCategory;
+    Calendar start_Date, select_Date;
 
-    String[] multipleSelectCategory = {"MainCourse", "Salad", "Soup"};
     int size = 0;
 
     ArrayList<Title> titles = new ArrayList<>();
@@ -67,12 +73,11 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
     boolean[] selectmeal;
     //   Deal deal = new Deal();
     boolean[] menuSelectDayCheck;
-    int check_day_index = -1;
-    int current_day = -1;
-    int last_day = -1;
+    int check_day_index = 0;
     String curentDate = "2018-05-20";
     int load = 0;
     boolean isFullDayMeal = true;
+    TextView tv_title,tv_dayName;
 
     ArrayList<Category> categories = new ArrayList<>();
 
@@ -88,9 +93,14 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
         Bundle bundle = this.getArguments();
 
         String strNoOfDays = bundle.getString("no_of_days");
+        String mealType = bundle.getString("type_of_meal");
+        if (mealType.equals("Lunch Only")) {
+            isFullDayMeal = false;
+        }
         intNoOFDays = Integer.parseInt(strNoOfDays);
         expListView = (ExpandableListView) view.findViewById(R.id.lvExp);
-
+        tv_title=(TextView)view.findViewById(R.id.tv_title_meal);
+        tv_dayName=(TextView)view.findViewById(R.id.tv_day_name);
         daysselectCategory = new ArrayList[intNoOFDays];
         daysCategory = new ArrayList[intNoOFDays];
         btn_select_meal = (Button) view.findViewById(R.id.btn_select_meal);
@@ -102,7 +112,7 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         horizontal_recycler_view.setLayoutManager(horizontalLayoutManager);
         horizontal_recycler_view.setAdapter(horizontalAdapter);
-
+        tv_title.setText(mealType);
 
         menuSelectDayCheck = new boolean[intNoOFDays];
         for (int i = 0; i < intNoOFDays; i++) {
@@ -115,6 +125,7 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
         int year = Prefs.getInt("year", 0);
         /* starts before 1 month from now */
         Calendar startDate = Calendar.getInstance();
+        start_Date = startDate;
 
         //  Toast.makeText(getActivity(), "" + Calendar.DATE, Toast.LENGTH_SHORT).show();
         startDate.add(Calendar.DATE, 3);
@@ -196,17 +207,17 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
         return view;
     }
 
-    public void updateCheckIndex() {
+   /* public void updateCheckIndex() {
         //check_day_index=check_day_index+(current_day-last_day);
         if (last_day < current_day) {
             check_day_index++;
         } else {
             check_day_index--;
         }
-    }
+    }*/
 
     public void getMeals(final String date) {
-        if (!isContainData() || check_day_index != 0) {
+        if (!isContainData()) {
             load++;
      /*   Intent intent1 = new Intent(SignInActivity.this, MissOutActivity.class);
         startActivity(intent1);*/
@@ -253,7 +264,6 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
                                 //   JSONArray items = data.getJSONArray("Items");
 /*
                             for (int j=0;j<items.length();j++){
-
                                 JSONObject temp = items.getJSONObject(i);
                                 category.items.add(temp.getString("item"));
                             }*/
@@ -270,6 +280,10 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
                                 categories.add(category);
 
                                 selectCategory.add(new Category(data.getString("CategoryName"), new ArrayList<Item>()));
+                                selectCategory.get(i).items.add(null);
+                                if (isFullDayMeal && isMultipleSelect_onFullDay(selectCategory.get(i).getCategoryName())) {
+                                    selectCategory.get(i).items.add(null);
+                                }
                                 titles.add(new Title(data.getString("CategoryName")));
                             }
                             titles.get(0).setSelect(true);
@@ -303,38 +317,68 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
     }
 
     @Override
-    public void ClickChildView(final int groupPosition, final int childPosition) {
+    public void ClickChildView(final int groupPosition, final int childPosition, boolean isFull) {
         Boolean select = false;
         ArrayList<Category> categories = daysCategory[check_day_index];
 
-        selectCategory.get(groupPosition).items.clear();
-        for (Item temp : categories.get(groupPosition).items) {
-            if (temp.isCheck()) {
-                if (isFullDayMeal && isMultipleSelect_onFullDay(categories.get(groupPosition).getCategoryName())) {
-                    if (!select) {
-                        select = true;
-                        selectCategory.get(groupPosition).items.add(temp);
-                    } else
-                        temp.setCheck(false);
-
-                } else {
-
-                    temp.setCheck(false);
+       /* if (selectCategory.get(groupPosition).items.size() == 2) {
+            for (Item item1 : selectCategory.get(groupPosition).items) {
+                if (isFull && item1.isCheck1()) {
+                    temp_item = item1;
+                    select = true;
+                } else if (!isFull && item1.isCheck2()) {
+                    select = true;
+                    temp_item = item1;
                 }
             }
         }
-        categories.get(groupPosition).items.get(childPosition).setCheck(true);
-        Item item = categories.get(groupPosition).items.get(childPosition);
+
+        selectCategory.get(groupPosition).items.clear();
+       */
+        for (Item temp : categories.get(groupPosition).items) {
+            if (!isFull) {
+                if (temp.isCheck1()) {
+                    /*if (!select) {
+                        select = true;
+                        selectCategory.get(groupPosition).items.add(temp);
+                    } else*/
+                    temp.setCheck1(false);
+
+
+                }
+            } else {
+                if (temp.isCheck2()) {
+
+                    temp.setCheck2(false);
+
+                }
+            }
+
+        }
+
+        if (!isFull) {
+            categories.get(groupPosition).items.get(childPosition).setCheck1(true);
+            Item item = categories.get(groupPosition).items.get(childPosition);
+            selectCategory.get(groupPosition).items.set(0, item);
+
+        } else {
+            categories.get(groupPosition).items.get(childPosition).setCheck2(true);
+            Item item = categories.get(groupPosition).items.get(childPosition);
+            selectCategory.get(groupPosition).items.set(1, item);
+
+        }
+
         //  selectCategory.get(groupPosition).items = new ArrayList<>();
-        selectCategory.get(groupPosition).items.add(item);
         if (isFullDayMeal && isMultipleSelect_onFullDay(categories.get(groupPosition).getCategoryName())) {
-            if (selectCategory.get(groupPosition).items.size() == 2) {
+            if (selectCategory.get(groupPosition).items.get(0)!=null&&
+                    selectCategory.get(groupPosition).items.get(1)!=null) {
                 selectmeal[groupPosition] = true;
 
             }
         } else {
             selectmeal[groupPosition] = true;
         }
+
         SetAdapter_list(check_day_index);
         expListView.post(new Runnable() {
             @Override
@@ -344,23 +388,19 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
         });
         //      listAdapter.notifyDataSetChanged();
 /*
-
         selectmeal[groupPosition] = true;
         if(!categories.get(groupPosition).items.get(childPosition).isCheck()){
-
             categories.get(groupPosition).items.get(childPosition).setCheck(true);
             Item item = categories.get(groupPosition).items.get(childPosition);
             selectCategory.get(groupPosition).items.add(item);
-
         }
         else {
             categories.get(groupPosition).items.get(childPosition).setCheck(false);
             selectCategory.get(groupPosition).items.remove(childPosition);
-
         }
 */
         //  selectCategory.get(groupPosition).items = new ArrayList<>();
-        listAdapter.notifyDataSetChanged();
+        //     listAdapter.notifyDataSetChanged();
     }
 
     boolean AllCheck() {
@@ -373,17 +413,19 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
     }
 
     public String getDateString(Calendar date) {
-
+        select_Date = date;
         int year = date.get(Calendar.YEAR);
         int month = date.get(Calendar.MONTH) + 1;
         int day = date.get(Calendar.DAY_OF_MONTH);
         String dateStr = "" + year + "-" + month + "-" + day;
 
-        last_day = current_day;
-        current_day = day;
-        curentDate = dateStr;
 
-        updateCheckIndex();
+        SimpleDateFormat outFormat = new SimpleDateFormat("EEEE");
+        String goal = outFormat.format(date.getTime());
+        tv_dayName.setText(goal);
+        check_day_index = compareToDay(start_Date, select_Date);
+
+        // updateCheckIndex();
         return dateStr;
     }
 
@@ -405,7 +447,7 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
     }
 
     public void SetAdapter_list(final int index) {
-        listAdapter = new ExpandableListAdapter(getContext(), daysCategory[index], "Meals", FullDayMealsFragment.this);
+        listAdapter = new ExpandableListAdapter(getContext(), daysCategory[index], "Meals", FullDayMealsFragment.this, isFullDayMeal);
 
         // setting list adapter
         expListView.setAdapter(listAdapter);
@@ -420,21 +462,27 @@ public class FullDayMealsFragment extends Fragment implements ExpandableListAdap
         });
     }
 
-    private boolean isMultipleSelect_onFullDay(String name) {
-        for (String category : multipleSelectCategory) {
-            if (category.equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     private boolean isContainData() {
+        boolean flag;
+        if (daysCategory[check_day_index] == null) {
+            flag = false;
+        } else {
+            flag = true;
+        }
+        return flag;
+    }
 
-        if (daysCategory[check_day_index] == null)
-            return false;
-        else
-            return true;
+    public static int compareToDay(Calendar start_Date, Calendar select_Date) {
+        Date date1 = start_Date.getTime();
+        Date date2 = select_Date.getTime();
+
+        if (date1 == null || date2 == null) {
+            return 0;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        int index = sdf.format(date2).compareTo(sdf.format(date1));
+        return index;
     }
 
 

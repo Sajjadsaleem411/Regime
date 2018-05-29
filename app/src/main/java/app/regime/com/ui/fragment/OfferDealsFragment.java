@@ -139,6 +139,9 @@ public class OfferDealsFragment extends Fragment {
         ChooseFullDayMeal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Bundle bundle=new Bundle();
+                bundle.putString("type_of_meal","Full Day Meal");
+                fragmentContact.ChangeFragment("OfferDayFragment",bundle);
                 //      startActivity(new Intent(OfferDeals.this,FullDayMealSecond.class));
             }
         });
@@ -146,7 +149,10 @@ public class OfferDealsFragment extends Fragment {
         ChooseLunchOnly.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fragmentContact.ChangeFragment("OfferDayFragment",null);
+                Bundle bundle=new Bundle();
+                bundle.putString("type_of_meal","Lunch Only");
+      //          Toast.makeText(getActivity(), "Coming soon this module is under development.", Toast.LENGTH_SHORT).show();
+                fragmentContact.ChangeFragment("OfferDayFragment",bundle);
                 //     startActivity(new Intent(OfferDeals.this,FullDayMealSecond.class));
             }
         });

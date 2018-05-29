@@ -1,5 +1,6 @@
 package app.regime.com.ui.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -28,6 +30,7 @@ import app.regime.com.R;
 import app.regime.com.api.ApiInterface;
 import app.regime.com.api.RetroProvider;
 import app.regime.com.model.Menu;
+import app.regime.com.ui.FragmentContact;
 import app.regime.com.ui.adapter.HorizontalAdapter;
 import app.regime.com.ui.adapter.ViewPagerAdapter;
 import app.regime.com.utills.CommonUtils;
@@ -40,12 +43,19 @@ import retrofit2.Response;
  * Created by Muhammad Sajjad on 4/17/2018.
  */
 
+@SuppressLint("ValidFragment")
 public class HomeFragment extends Fragment {
     RecyclerView horizontal_recycler_view;
     HorizontalAdapter horizontalAdapter;
+    Button btn_register_account;
     private List<Integer> data;
+    FragmentContact fragmentContact;
     ViewPager viewPager;
     List<String> images;
+    @SuppressLint("ValidFragment")
+    public HomeFragment(FragmentContact fragmentContact) {
+        this.fragmentContact = fragmentContact;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,7 +67,13 @@ public class HomeFragment extends Fragment {
         images = new ArrayList<>();
         data = fill_with_data();
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
-
+        btn_register_account = (Button) view.findViewById(R.id.btn_register_account);
+        btn_register_account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragmentContact.ChangeFragment("OfferDealsFragment", null);
+            }
+        });
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getActivity());
 
         viewPager.setAdapter(viewPagerAdapter);
